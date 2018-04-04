@@ -21,11 +21,13 @@ import javax.swing.*;
 //look into jfree chart library
 public class apiFetchFunction {
 	
+	//objects for referencing java ui panels
 	static summaryPanel sumPanel = new summaryPanel();
 	static yourStocksPanel yourSPanel = new yourStocksPanel();
 	static dataPanel dPanel = new dataPanel();
 	static stockSearchPanel sSearchPanel = new stockSearchPanel();
 	static helpPanel hPanel = new helpPanel();
+	static apiFetch jsonFetch = new apiFetch();
 	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
@@ -33,10 +35,10 @@ public class apiFetchFunction {
 				//TODO test url for AAPL call
 				URL testURL = new URL("https://api.iextrading.com/1.0/stock/market/batch?symbols=aapl&types=quote");
 				//URL testURL = new URL("https://www.quandl.com/api/v3/datasets/WIKI/FB.json?column_index=4&start_date=2017-01-01&end_date=2017-12-31&collapse=monthly&transform=rdiff&api_key=ZGGxFod_7TVXrEU-UeuL");
-				String result = getJson(testURL.toString());
-				System.out.println(result);
+				String result = apiFetch.getJson(testURL.toString());
+				//System.out.println(result);
 				
-				parseIt(result);
+				//parseIt(result);
 				
 				//initialize frame for UI
 				JFrame frame = new JFrame("Stock Ticker");
@@ -78,46 +80,6 @@ public class apiFetchFunction {
 	}
 
 	
-	
-	//parse an example from apple
-	public static void parseIt(String json) throws JSONException{
-		
-		JSONObject jObj = new JSONObject(json);
-		JSONObject result = jObj.getJSONObject("AAPL");
-		JSONObject result1 = result.getJSONObject("quote");
-		
-		String symbol = result1.getString("symbol");
-		String iexRealtimePrice = result1.getString("iexRealtimePrice");
-		System.out.println(symbol + " " + iexRealtimePrice);
-
-	}
-	
-
-	
-		//retrieve json from a url string and return it to the main
-		public static String getJson(String url) throws Exception{
-		try {
-		      URL request = new URL(url);
-		      URLConnection connection = request.openConnection();
-		      
-		      //timeout if connection is stuck
-		      connection.setConnectTimeout(100);
-		      connection.setReadTimeout(100);
-
-		      InputStreamReader inputStream = new InputStreamReader(connection.getInputStream(), "UTF-8");
-		      BufferedReader bufferedReader = new BufferedReader(inputStream);
-		      StringBuilder responseBuilder = new StringBuilder();
-
-		      String line;
-		      while ((line = bufferedReader.readLine()) != null) {
-		        responseBuilder.append(line);
-		      }
-		      bufferedReader.close();
-		      return responseBuilder.toString();
-		    } catch (IOException e) {
-		      throw new Exception("failure sending request", e);
-		    }
-		}
 
 			
 }
