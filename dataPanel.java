@@ -84,7 +84,7 @@ public class dataPanel extends JPanel {
 	}
 
 	private JFreeChart createChart() {
-		XYSeries series = new XYSeries("XYGraph");
+		XYSeries series = new XYSeries(symbols.get(testStock));
 
 		// adds data to series to be used in chart
 		for (int i = 0; i < closedPrices.size(); i++) {
@@ -199,16 +199,10 @@ public class dataPanel extends JPanel {
 
 		// get data to display in a chart from the last 20 days
 		JSONArray chart = result.getJSONArray("chart");
-		// parse the chart array
 		for (int i = 0; i < chart.length(); i++) {
-			String closeP = chart.getJSONObject(i).getString("close");
-
-			// create list of closed prices for the last 20 days
-			closedPrices.add(closeP);
-			// System.out.println("closeP "+ closeP);
+			closedPrices.add(chart.getJSONObject(i).getString("close"));
 		}
-
-		System.out.println("Chart Length= " + chart.length());
+		
 	}
 
 	public void setStockNumber(int number){
