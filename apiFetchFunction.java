@@ -3,7 +3,6 @@ package csi480;
 import java.net.URL;
 
 
-import org.jfree.chart.*;//TODO
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,9 +12,8 @@ import javax.swing.*;
 
 //add pasword protection?
 //java card layout
-//look into jfree chart library
 public class apiFetchFunction {
-	
+		
 	//objects for referencing java ui panels
 	static summaryPanel sumPanel = new summaryPanel();
 	static yourStocksPanel yourSPanel = new yourStocksPanel();

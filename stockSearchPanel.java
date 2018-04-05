@@ -28,7 +28,7 @@ public class stockSearchPanel extends JPanel {
 	public Vector<String> headlines = new Vector<String>();
 	public Vector<String> symbols = new Vector<String>();
 	public Vector<String> companyNames = new Vector<String>();
-	private apiFetchFunction apiFetchObj = new apiFetchFunction();
+	
 	private parseSpecificStockData specificStockFields = new parseSpecificStockData();
 	private apiFetch jsonFetch = new apiFetch();
 	String baseUrl = "https://api.iextrading.com/1.0/";
@@ -222,4 +222,8 @@ public class stockSearchPanel extends JPanel {
 			
 		}
 
+		
+		
+		
+		
 }//end of class
