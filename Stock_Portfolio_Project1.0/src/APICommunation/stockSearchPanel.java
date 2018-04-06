@@ -1,6 +1,9 @@
 package APICommunation;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +43,7 @@ public class stockSearchPanel extends JPanel {
 	private parseSpecificStockData specificStockFields = new parseSpecificStockData();
 	private apiFetch jsonFetch = new apiFetch();
 	String baseUrl = "https://api.iextrading.com/1.0/";
+
 	
 		public stockSearchPanel() {
 			setLayout(new BorderLayout());
@@ -44,8 +57,6 @@ public class stockSearchPanel extends JPanel {
 			searchBarNames.setEditable(false);
 			searchBarNames.setPrototypeDisplayValue("Search Box");
 			
-
-						
 			
 			//JComboBox for symbols
 			JComboBox<String> searchBarSymb = new JComboBox<String>(symbols);
@@ -93,16 +104,22 @@ public class stockSearchPanel extends JPanel {
 			JPanel dataResultsGrid = new JPanel();
 			dataResultsGrid.setLayout(new GridLayout(10,1));
 			
+			//JPanel for the chart
+			JPanel chartPanel = new JPanel();
+			
 			submitButton.addActionListener(new ActionListener(){
 				 
 				public void actionPerformed(ActionEvent e)
 		            {
-					//remove current stocks
+					//remove current stocks data
 					dataResultsGrid.removeAll();
+					chartPanel.removeAll();
+					
+					String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
 
 						//only searching for names combo box now, make it so one combo box is disabled
 		                //use latest price field for the latest price (never null)
-		                getAPIStocks(baseUrl + "stock/market/batch?symbols="+ symbols.elementAt(searchBarNames.getSelectedIndex()) +"&types=quote,news,chart", 1, symbols.elementAt(searchBarNames.getSelectedIndex()) );     
+		                getAPIStocks(baseUrl + "stock/market/batch?symbols="+ symbolSelected +"&types=quote,news,chart", 1, symbolSelected );     
 		                
 		    			//JLabel's for the specific stock data and fields
 		    			JLabel data = new JLabel(specificStockFields.getCompanyName());
@@ -127,8 +144,13 @@ public class stockSearchPanel extends JPanel {
 		                dataResultsGrid.add(week52High);
 		                dataResultsGrid.add(week52Low);
 		                
-
+		    			//create chart and add it to the right panel
+		   			 	JFreeChart chart = createChart(symbolSelected);
+		                chartPanel.removeAll();
+		                chartPanel.add(new ChartPanel(chart));
+		                
 		               revalidate();
+		               repaint();
 		                
 		            }
 			});
@@ -139,8 +161,10 @@ public class stockSearchPanel extends JPanel {
 			AutoCompleteDecorator.decorate(searchBarNames); 
 			AutoCompleteDecorator.decorate(searchBarSymb);
 			
+			
 			add(searchBarGrid, BorderLayout.LINE_START);
 			add(dataResultsGrid, BorderLayout.CENTER);
+			add(chartPanel, BorderLayout.LINE_END);
 			
 
 		}
@@ -241,6 +265,55 @@ public class stockSearchPanel extends JPanel {
 				
 			
 		}
+		
+		//include chart
+	    protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        Graphics2D g2d = (Graphics2D) g.create();
+	        g2d.dispose();
+	    }
+	 
+	    private JFreeChart createChart(String symbol) {
+	    	//put stock symbol there
+	        XYSeries series = new XYSeries(symbol);
+	 
+	        // adds data to series to be used in chart
+	        for (int i = 0; i < closedPrices.size(); i++) {
+	            series.add((i), Double.parseDouble(closedPrices.elementAt(i)));
+	        }//first input param is x axis, 2nds is y axis
+	 
+	        // Add the series to your data set
+	        XYSeriesCollection dataset = new XYSeriesCollection();
+	        dataset.addSeries(series);
+	 
+	        // Generate the graph
+	        JFreeChart chart = ChartFactory.createXYLineChart(symbol, // Title
+	                "Time (x-axis)", // x-axis Label
+	                "Price (y-axis)", // y-axis Label
+	                dataset, // Dataset
+	                PlotOrientation.VERTICAL, // Plot Orientation
+	                true, // Show Legend
+	                true, // Use tooltips
+	                false // Configure chart to generate URLs?
+	        );
+	 
+	        
+	          XYPlot xyPlot = (XYPlot) chart.getPlot();
+	            xyPlot.setDomainCrosshairVisible(true);
+	            xyPlot.setRangeCrosshairVisible(true);
+	          
+	            XYItemRenderer renderer = xyPlot.getRenderer();
+	            renderer.setSeriesPaint(0, Color.blue);
+	    
+	          
+	            //y-axis
+	            NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
+	            range.setAutoRange(true);
+	            range.setAutoRangeIncludesZero(false);
+	            
+	        return chart;
+	 
+	    }
 
 }//end of class
 
