@@ -1,8 +1,6 @@
 package APICommunation;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.json.JSONArray;
@@ -47,12 +44,34 @@ public class stockSearchPanel extends JPanel {
 			searchBarNames.setEditable(false);
 			searchBarNames.setPrototypeDisplayValue("Search Box");
 			
-			//add action listeners to correlate boxes with each other (Match)
+
+						
 			
 			//JComboBox for symbols
 			JComboBox<String> searchBarSymb = new JComboBox<String>(symbols);
 			searchBarSymb.setEditable(false);
 			searchBarSymb.setPrototypeDisplayValue("Search Box");
+			
+			//add action listeners to correlate boxes with each other (Match)
+			searchBarNames.addActionListener(
+					new ActionListener(){
+						 
+						public void actionPerformed(ActionEvent e)
+				            {
+							searchBarSymb.setSelectedIndex(searchBarNames.getSelectedIndex());
+				            }
+							
+			});
+			
+			searchBarSymb.addActionListener(
+					new ActionListener(){
+						 
+						public void actionPerformed(ActionEvent e)
+				            {
+							searchBarNames.setSelectedIndex(searchBarSymb.getSelectedIndex());	
+				            }
+							
+			});
 			
 			//JLabel
 			JLabel titleInstructionsNames = new JLabel("Select or Type in a Stock Name/Symbol");
@@ -215,7 +234,7 @@ public class stockSearchPanel extends JPanel {
 			for (int i = 0; i < chart.length(); i++){
 				String closeP = chart.getJSONObject(i).getString("close"); 
 				
-				//create list of closed prices for the last 10 days
+				//create list of closed prices for the last 20 days
 				closedPrices.add(closeP);
 				System.out.println(closeP);
 			}
