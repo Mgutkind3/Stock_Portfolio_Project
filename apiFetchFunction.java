@@ -36,6 +36,32 @@ public class apiFetchFunction {
 				JFrame frame = new JFrame("Stock Ticker");
 				frame.setSize(600, 500);
 				JTabbedPane tp = new JTabbedPane();
+		
+				//initialize menu frame
+				JFrame menu = new JFrame("Stock Ticker Menu");
+				menu.setSize(500, 250);
+				menu.setLayout(new FlowLayout());
+				menu.setLocationRelativeTo(null);
+				menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				menu.setMinimumSize(new Dimension(400, 200));
+
+				//add password field
+				JLabel passwordLabel = new JLabel("Enter password");
+				JPasswordField passwordField = new JPasswordField(20); 
+				passwordField.setToolTipText("Please enter password");
+				menu.add(passwordLabel);
+				menu.add(passwordField);
+				JButton enter = new JButton("Login");  
+				menu.add(enter);
+
+				//create logout button
+				JButton logOut = new JButton("Log out");
+				JPanel logOutPanel = new JPanel();
+				FlowLayout fLayout = new FlowLayout();
+				fLayout.setAlignment(FlowLayout.TRAILING);
+				logOutPanel.setLayout(fLayout);
+				logOutPanel.add(logOut);
+				menu.setVisible(true);
 				
 				//create scroll panes for every page
 				JScrollPane summaryScroll = new JScrollPane(sumPanel);
@@ -56,7 +82,6 @@ public class apiFetchFunction {
 				frame.setLocationRelativeTo(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setMinimumSize(new Dimension(400, 200));
-				frame.setVisible(true);
 			}//end of main
 
 				
@@ -70,7 +95,17 @@ public class apiFetchFunction {
 
 		return title;
 	}
-
+ 
+	//submit password
+	enter.addActionListener(new ActionListener() {  
+		    public void actionPerformed(ActionEvent e) {  
+		    	if (Arrays.equals(passwordField.getPassword(), new char[]{'h','i'})){   
+		    	   passwordField.setText("");
+		    	   menu.setVisible(false);
+		       	   frame.setVisible(true);
+		       }
+		    }  
+		    }); 
 	
 
 			
