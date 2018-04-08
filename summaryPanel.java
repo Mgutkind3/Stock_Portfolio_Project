@@ -10,7 +10,16 @@ public class summaryPanel extends JPanel {
 
 	private apiFetchFunction cTitle = new apiFetchFunction();
 	
+	
+				
 	public summaryPanel() {
+		//create logout button
+		JButton logOut = new JButton("Log out");
+		JPanel logOutPanel = new JPanel();
+		FlowLayout fLayout = new FlowLayout();
+		fLayout.setAlignment(FlowLayout.TRAILING);
+		logOutPanel.setLayout(fLayout);
+		logOutPanel.add(logOut);
 		
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
@@ -21,5 +30,6 @@ public class summaryPanel extends JPanel {
 		
 		add(sumLabel, BorderLayout.CENTER);
 		add(favoritesLabel, BorderLayout.NORTH);
+		add(logOutPanel, BorderLayout.SOUTH);
 	}
 }
