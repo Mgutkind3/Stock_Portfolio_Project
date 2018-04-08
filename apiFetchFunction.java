@@ -53,15 +53,6 @@ public class apiFetchFunction {
 				menu.add(passwordField);
 				JButton enter = new JButton("Login");  
 				menu.add(enter);
-
-				//create logout button
-				JButton logOut = new JButton("Log out");
-				JPanel logOutPanel = new JPanel();
-				FlowLayout fLayout = new FlowLayout();
-				fLayout.setAlignment(FlowLayout.TRAILING);
-				logOutPanel.setLayout(fLayout);
-				logOutPanel.add(logOut);
-				menu.setVisible(true);
 				
 				//create scroll panes for every page
 				JScrollPane summaryScroll = new JScrollPane(sumPanel);
