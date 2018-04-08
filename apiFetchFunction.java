@@ -53,6 +53,7 @@ public class apiFetchFunction {
 				menu.add(passwordField);
 				JButton enter = new JButton("Login");  
 				menu.add(enter);
+				mene.setVisible(true);
 				
 				//create scroll panes for every page
 				JScrollPane summaryScroll = new JScrollPane(sumPanel);
