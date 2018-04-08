@@ -99,7 +99,7 @@ public class apiFetchFunction {
 	//submit password
 	enter.addActionListener(new ActionListener() {  
 		    public void actionPerformed(ActionEvent e) {  
-		    	if (Arrays.equals(passwordField.getPassword(), new char[]{'h','i'})){   
+		    	if (Arrays.equals(passwordField.getPassword(), new char[]{'p','a','s','s','w','o','r','d'})){   
 		    	   passwordField.setText("");
 		    	   menu.setVisible(false);
 		       	   frame.setVisible(true);
