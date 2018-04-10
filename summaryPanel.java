@@ -2,10 +2,17 @@ package csi480;
 
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-imort java.util.*;
+import javax.swing.JTextArea;
+
+import java.util.*;
 
 public class summaryPanel extends JPanel {
 
@@ -57,8 +64,8 @@ public class summaryPanel extends JPanel {
 		//logout button
 		logOut.addActionListener(new ActionListener() {  
 		    public void actionPerformed(ActionEvent e) {  
-		    	 menu.setVisible(true);
-		         frame.setVisible(false);
+		    	 apiFetchFunction.menu.setVisible(true);
+		    	 apiFetchFunction.frame.setVisible(false);
 		    }  
 		    }); 
 	}

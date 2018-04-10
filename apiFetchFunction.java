@@ -1,6 +1,6 @@
 package csi480;
 
-import java.net.URL;
+
 import java.util.Arrays;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,22 +13,21 @@ import java.awt.event.KeyListener;
 import javax.swing.border.TitledBorder;
 import javax.swing.*;
 
-//add pasword protection?
-//java card layout
+
 public class apiFetchFunction {
 
 	// objects for referencing java ui panels
-	static summaryPanel sumPanel = new summaryPanel();
-	static yourStocksPanel yourSPanel = new yourStocksPanel();
-	static dataPanel dPanel = new dataPanel();
-	static stockSearchPanel sSearchPanel = new stockSearchPanel();
-	static helpPanel hPanel = new helpPanel();
-	static apiFetch jsonFetch = new apiFetch();
-
+	private static summaryPanel sumPanel = new summaryPanel();
+	private static yourStocksPanel yourSPanel = new yourStocksPanel();
+	private static dataPanel dPanel = new dataPanel();
+	private static stockSearchPanel sSearchPanel = new stockSearchPanel();
+	private static helpPanel hPanel = new helpPanel();
+	public static JFrame menu = new JFrame("Stock Ticker Menu");
+	public static JFrame frame = new JFrame("Stock Ticker");
+	
 	public static void main(String[] args) throws Exception {
 
 		// create menu frame
-		JFrame menu = new JFrame("Stock Ticker Menu");
 		menu.setSize(500, 250);
 		menu.setLayout(new FlowLayout());
 		menu.setLocationRelativeTo(null);
@@ -45,7 +44,7 @@ public class apiFetchFunction {
 		menu.setVisible(true);
 
 		// initialize frame for UI
-		JFrame frame = new JFrame("Stock Ticker");
+	
 		frame.setSize(750, 650);
 		JTabbedPane tp = new JTabbedPane();
 
