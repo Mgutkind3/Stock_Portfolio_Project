@@ -1,4 +1,6 @@
 package APICommunation;
+
+
 import java.net.URL;
 import java.util.Arrays;
 import java.awt.Dimension;
@@ -12,8 +14,7 @@ import java.awt.event.KeyListener;
 import javax.swing.border.TitledBorder;
 import javax.swing.*;
 
-//add pasword protection?
-//java card layout
+
 public class apiFetchFunction {
 		
 	//objects for referencing java ui panels
@@ -23,11 +24,14 @@ public class apiFetchFunction {
 	static stockSearchPanel sSearchPanel = new stockSearchPanel();
 	static helpPanel hPanel = new helpPanel();
 	static apiFetch jsonFetch = new apiFetch();
+	public static JFrame menu = new JFrame("Stock Ticker Menu");
+	//initialize frame for UI
+	public static JFrame frame = new JFrame("Stock Ticker");
 	
 	public static void main(String[] args) throws Exception {
 		
 		//create menu frame
-		JFrame menu = new JFrame("Stock Ticker Menu");
+
 		menu.setSize(500, 250);
 		menu.setLayout(new FlowLayout());
 		menu.setLocationRelativeTo(null);
@@ -43,16 +47,9 @@ public class apiFetchFunction {
 		menu.add(enter);
 		menu.setVisible(true);
 	        
-				//TODO test url for AAPL call
-				URL testURL = new URL("https://api.iextrading.com/1.0/stock/market/batch?symbols=aapl&types=quote");
-				//URL testURL = new URL("https://www.quandl.com/api/v3/datasets/WIKI/FB.json?column_index=4&start_date=2017-01-01&end_date=2017-12-31&collapse=monthly&transform=rdiff&api_key=ZGGxFod_7TVXrEU-UeuL");
-				String result = apiFetch.getJson(testURL.toString());
-				//System.out.println(result);
+
 				
-				//parseIt(result);
-				
-				//initialize frame for UI
-				JFrame frame = new JFrame("Stock Ticker");
+
 				frame.setSize(750, 650);
 				JTabbedPane tp = new JTabbedPane();
 				
