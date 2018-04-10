@@ -1,6 +1,5 @@
 package csi480;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
@@ -18,16 +17,16 @@ public class chartPanel extends JPanel {
 	private XYPlot xyPlot;
 	private String xAxis;
 	private String yAxis;
-	private String title = "";
+	private String title;
 	private JFreeChart chart;
 	private int datasetIndex = 0;
 
 	private ArrayList<XYSeriesCollection> dataset = new ArrayList<XYSeriesCollection>();
 
 	public chartPanel() {
-		setxAxsis("Days");
-		setyAxsis("Price");
-
+		xAxis = "Time";
+		yAxis = "Price";
+		title = "Title";
 		chart = ChartFactory.createXYLineChart(title, // Title
 				xAxis, // x-axis Label
 				yAxis, // y-axis Label
@@ -62,6 +61,12 @@ public class chartPanel extends JPanel {
 		);
 
 		this.xyPlot = chart.getXYPlot();
+		xyPlot.setDomainCrosshairVisible(true);
+		xyPlot.setRangeCrosshairVisible(true);
+
+		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
+		range.setAutoRange(true);
+		range.setAutoRangeIncludesZero(false);
 	}
 
 	public String getTitle() {
@@ -105,7 +110,7 @@ public class chartPanel extends JPanel {
 		for (int i = dataset.size() - 1; i >= 0; i--) {
 			this.dataset.get(i).getSeries().clear();
 		}
-		this.datasetIndex=0;
+		this.datasetIndex = 0;
 		refreshChart();
 	}
 
