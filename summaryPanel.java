@@ -15,10 +15,6 @@ import javax.swing.JTextArea;
 import java.util.*;
 
 public class summaryPanel extends JPanel {
-
-	private apiFetchFunction cTitle = new apiFetchFunction();
-	
-	
 				
 	public summaryPanel() {
 		ArrayList<String> favorites =new ArrayList<String>();
