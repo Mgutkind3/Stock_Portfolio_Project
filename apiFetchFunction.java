@@ -22,6 +22,23 @@ public class apiFetchFunction {
 	static apiFetch jsonFetch = new apiFetch();
 	
 	public static void main(String[] args) throws Exception {
+		
+		//create menu frame
+		JFrame menu = new JFrame("Stock Ticker Menu");
+		menu.setSize(500, 250);
+		menu.setLayout(new FlowLayout());
+		menu.setLocationRelativeTo(null);
+		menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		menu.setMinimumSize(new Dimension(400, 200));
+		
+		JLabel passwordLabel = new JLabel("Enter password");
+		JPasswordField passwordField = new JPasswordField(20); 
+		passwordField.setToolTipText("Please enter password");
+		menu.add(passwordLabel);
+		menu.add(passwordField);
+		JButton enter = new JButton("Login");  
+		menu.add(enter);
+		menu.setVisible(true);
 	        
 				//TODO test url for AAPL call
 				URL testURL = new URL("https://api.iextrading.com/1.0/stock/market/batch?symbols=aapl&types=quote");
@@ -55,7 +72,6 @@ public class apiFetchFunction {
 				frame.setLocationRelativeTo(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setMinimumSize(new Dimension(400, 200));
-				frame.setVisible(true);
 			}//end of main
 
 				
@@ -69,8 +85,39 @@ public class apiFetchFunction {
 
 		return title;
 	}
-
 	
+	//the enter button on login screen
+	enter.addActionListener(new ActionListener() {  
+		    public void actionPerformed(ActionEvent e) {  
+		    	if (Arrays.equals(passwordField.getPassword(), new char[]{'p','a','s','s','w','o','r','d'})){   
+		    	   passwordField.setText("");
+		    	   menu.setVisible(false);
+		       	   frame.setVisible(true);
+		       }
+		    }  
+		    }); 
+		
+	//hit enter to log in
+	passwordField.addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if(e.getKeyChar()==KeyEvent.VK_ENTER){
+                    enter.doClick();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //Do Nothing
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                //Do Nothing
+            }
+
+   	 });
+	}  
 
 			
 }
