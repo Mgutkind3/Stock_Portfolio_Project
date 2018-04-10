@@ -1,7 +1,6 @@
-package APICommunation;
+package csi480;
 
 import java.awt.BorderLayout;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,14 +22,13 @@ import org.json.JSONObject;
 
 public class dataPanel extends JPanel implements ActionListener {
 
-	// impliment lists to house data
-	public Vector<String> closedPrices = new Vector<String>();
-	public Vector<String> symbols = new Vector<String>();
-	public Vector<String> companyNames = new Vector<String>();
-	chartPanel cp = new chartPanel();
+	// Implement lists to house data
+	private Vector<String> closedPrices = new Vector<String>();
+	private Vector<String> symbols = new Vector<String>();
+	private Vector<String> companyNames = new Vector<String>();
+	private chartPanel cp = new chartPanel();
 
 	private parseSpecificStockData data = new parseSpecificStockData();
-	private apiFetch jsonFetch = new apiFetch();
 	final String baseUrl = "https://api.iextrading.com/1.0/";
 	private int testStock = 1;
 	private JPanel graphPanel;
@@ -45,7 +43,7 @@ public class dataPanel extends JPanel implements ActionListener {
 		getAPIStocks(baseUrl + "ref-data/symbols", 0, null);
 
 		setLayout(new BorderLayout());// TODO pick a better layout
-		graphPanel = new JPanel(new BorderLayout());
+		graphPanel = new JPanel();
 
 		 cp.setxAxsis("Days");
 		 cp.setyAxsis("Dollars");
@@ -59,46 +57,36 @@ public class dataPanel extends JPanel implements ActionListener {
 		btnAdd.setActionCommand("ADD_DATASET");
 		btnAdd.addActionListener(this);
 
-		add(graphPanel);
+		add(graphPanel,BorderLayout.CENTER);
 		add(btnRandom, BorderLayout.NORTH);
 		add(btnAdd, BorderLayout.SOUTH);
-		btnRandom.doClick();
+		updateChart();
 	}
 
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(200, 200);
-	}
-
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.dispose();
-	}
 
 	public void actionPerformed(final ActionEvent e) {
 
 		if (e.getActionCommand().equals("ADD_DATASET")) {
 
-			cp.removeAll();
-			createChart();
-			graphPanel.add(cp.getChart());
-			revalidate();
-			repaint();
+		updateChart();
 		} else if (e.getActionCommand().equals("RANDOM")) {
 			
 			cp.removeAllDataset();
 			cp.setTitle("");
-			
-			cp.removeAll();
-			createChart();
-			graphPanel.add(cp.getChart());
-			revalidate();
-			repaint();
+			updateChart();
+		
 		}
 
 	}
 
+	private void updateChart(){
+		cp.removeAll();
+		createChart();
+		graphPanel.add(cp.getChart());
+		revalidate();
+		
+	}
+	
 	// creates a chart from a random stock
 	private void createChart() {
 		testStock = new Random().nextInt(companyNames.size() - 1);
@@ -197,4 +185,3 @@ public class dataPanel extends JPanel implements ActionListener {
 		testStock = number;
 	}
 }
- 
