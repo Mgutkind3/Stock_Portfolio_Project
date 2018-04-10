@@ -23,14 +23,13 @@ import org.json.JSONObject;
 
 public class dataPanel extends JPanel implements ActionListener {
 
-	// impliment lists to house data
-	public Vector<String> closedPrices = new Vector<String>();
-	public Vector<String> symbols = new Vector<String>();
-	public Vector<String> companyNames = new Vector<String>();
-	chartPanel cp = new chartPanel();
+	// Implement lists to house data
+	private Vector<String> closedPrices = new Vector<String>();
+	private Vector<String> symbols = new Vector<String>();
+	private Vector<String> companyNames = new Vector<String>();
+	private chartPanel cp = new chartPanel();
 
 	private parseSpecificStockData data = new parseSpecificStockData();
-	private apiFetch jsonFetch = new apiFetch();
 	final String baseUrl = "https://api.iextrading.com/1.0/";
 	private int testStock = 1;
 	private JPanel graphPanel;
@@ -64,7 +63,7 @@ public class dataPanel extends JPanel implements ActionListener {
 		add(btnAdd, BorderLayout.SOUTH);
 		btnRandom.doClick();
 	}
-
+/*
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(200, 200);
@@ -75,7 +74,7 @@ public class dataPanel extends JPanel implements ActionListener {
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.dispose();
 	}
-
+*/
 	public void actionPerformed(final ActionEvent e) {
 
 		if (e.getActionCommand().equals("ADD_DATASET")) {
