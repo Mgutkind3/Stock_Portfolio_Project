@@ -13,6 +13,13 @@ public class summaryPanel extends JPanel {
 	
 				
 	public summaryPanel() {
+		ArrayList<String> favorites =new ArrayList<String>();
+		ArrayList<String> myStocks =new ArrayList<String>();
+		favorites.add("fav1");
+		favorites.add("fav2");
+		myStocks.add("stock1");
+		myStocks.add("stock2");
+		
 		//create logout button
 		JButton logOut = new JButton("Log out");
 		JPanel logOutPanel = new JPanel();
