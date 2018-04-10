@@ -1,7 +1,7 @@
 package csi480;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,75 +15,96 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.jfree.chart.*;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class dataPanel extends JPanel {
+public class dataPanel extends JPanel implements ActionListener {
 
 	// impliment lists to house data
 	public Vector<String> closedPrices = new Vector<String>();
 	public Vector<String> symbols = new Vector<String>();
 	public Vector<String> companyNames = new Vector<String>();
+	chartPanel cp = new chartPanel();
 
 	private parseSpecificStockData data = new parseSpecificStockData();
 	private apiFetch jsonFetch = new apiFetch();
 	final String baseUrl = "https://api.iextrading.com/1.0/";
 	private int testStock = 1;
-	private JPanel chartPanel;
+	private JPanel graphPanel;
 
 	public dataPanel() {
+		final JButton btnRandom = new JButton("Random Graph");
+		final JButton btnAdd = new JButton("Add Series");
+
 		setBorder(apiFetchFunction.createTitle("Data"));
 
 		// get api response for all stocks and stock symbols available
 		getAPIStocks(baseUrl + "ref-data/symbols", 0, null);
 
-		setLayout(new BorderLayout());
-		chartPanel = new JPanel(new BorderLayout());
-		JButton btnRefresh = new JButton("Refresh");
+		setLayout(new BorderLayout());// TODO pick a better layout
+		graphPanel = new JPanel(new BorderLayout());
 
-		btnRefresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				testStock = new Random().nextInt(companyNames.size() - 1);
-				getAPIStocks(
-						baseUrl + "stock/market/batch?symbols=" + symbols.get(testStock) + "&types=quote,news,chart", 1,
-						symbols.get(testStock));
+		 cp.setxAxsis("Days");
+		 cp.setyAxsis("Dollars");
 
-				JFreeChart chart = createChart();
-				chartPanel.removeAll();
-				chartPanel.add(new ChartPanel(chart));
-				revalidate();
-				repaint();
-			}
-		});
+		// createChart();
+		// cp.createChart();
+		// graphPanel.add(cp.getChart());
 
-		add(chartPanel);
-		add(btnRefresh, BorderLayout.SOUTH);
-		btnRefresh.doClick();
+		btnRandom.setActionCommand("RANDOM");
+		btnRandom.addActionListener(this);
+		btnAdd.setActionCommand("ADD_DATASET");
+		btnAdd.addActionListener(this);
+
+		add(graphPanel);
+		add(btnRandom, BorderLayout.NORTH);
+		add(btnAdd, BorderLayout.SOUTH);
+		btnRandom.doClick();
 	}
 
-	
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(200, 200);
 	}
 
-	
-	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.dispose();
 	}
 
-	private JFreeChart createChart() {
+	public void actionPerformed(final ActionEvent e) {
+
+		if (e.getActionCommand().equals("ADD_DATASET")) {
+
+			cp.removeAll();
+			createChart();
+			graphPanel.add(cp.getChart());
+			revalidate();
+			repaint();
+		} else if (e.getActionCommand().equals("RANDOM")) {
+			
+			cp.removeAllDataset();
+			cp.setTitle("");
+			
+			cp.removeAll();
+			createChart();
+			graphPanel.add(cp.getChart());
+			revalidate();
+			repaint();
+		}
+
+	}
+
+	// creates a chart from a random stock
+	private void createChart() {
+		testStock = new Random().nextInt(companyNames.size() - 1);
+		getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbols.get(testStock) + "&types=quote,news,chart", 1,
+				symbols.get(testStock));
+		cp.setTitle(companyNames.get(testStock)+"\n"+cp.getTitle());
 		XYSeries series = new XYSeries(symbols.get(testStock));
 
 		// adds data to series to be used in chart
@@ -94,38 +115,8 @@ public class dataPanel extends JPanel {
 		// Add the series to your data set
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
-
-		// Generate the graph
-		JFreeChart chart = ChartFactory.createXYLineChart(companyNames.get(testStock), // Title
-				"Time (x-axis)", // x-axis Label
-				"Price (y-axis)", // y-axis Label
-				dataset, // Dataset
-				PlotOrientation.VERTICAL, // Plot Orientation
-				true, // Show Legend
-				true, // Use tooltips
-				false // Configure chart to generate URLs?
-		);
-
+		cp.addDataset(dataset);
 		
-		  XYPlot xyPlot = (XYPlot) chart.getPlot();
-	        xyPlot.setDomainCrosshairVisible(true);
-	        xyPlot.setRangeCrosshairVisible(true);
-	      
-	        XYItemRenderer renderer = xyPlot.getRenderer();
-	        renderer.setSeriesPaint(0, Color.blue);
-	
-	        
-	        //x-axis
-	        //    NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis();
-	        
-	
-	      
-	        //y-axis
-	        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
-	        range.setAutoRange(true);
-	        range.setAutoRangeIncludesZero(false);
-	        
-		return chart;
 
 	}
 
@@ -134,7 +125,7 @@ public class dataPanel extends JPanel {
 
 		try {
 			URL url = new URL(urlString);
-			String jsonResult = jsonFetch.getJson(url.toString());
+			String jsonResult = apiFetch.getJson(url.toString());
 
 			// parse differently according to call
 			if (flag == 0) {
@@ -156,9 +147,7 @@ public class dataPanel extends JPanel {
 	private void parseAllStockjson(String json) throws JSONException {
 
 		try {
-
 			JSONArray arr = new JSONArray(json);
-
 			for (int i = 0; i < arr.length(); i++) {
 				String symbol = arr.getJSONObject(i).getString("symbol");
 				String name = arr.getJSONObject(i).getString("name");
@@ -194,7 +183,6 @@ public class dataPanel extends JPanel {
 		data.setWeek52High(result1.getString("week52High"));
 		data.setWeek52Low(result1.getString("week52Low"));
 
-		
 		closedPrices.clear();
 
 		// get data to display in a chart from the last 20 days
@@ -202,10 +190,10 @@ public class dataPanel extends JPanel {
 		for (int i = 0; i < chart.length(); i++) {
 			closedPrices.add(chart.getJSONObject(i).getString("close"));
 		}
-		
+
 	}
 
-	public void setStockNumber(int number){
-		testStock=number;
+	public void setStockNumber(int number) {
+		testStock = number;
 	}
 }
