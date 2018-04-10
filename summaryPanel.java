@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+imort java.util.*;
 
 public class summaryPanel extends JPanel {
 
