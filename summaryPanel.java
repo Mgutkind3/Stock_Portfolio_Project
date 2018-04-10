@@ -21,15 +21,37 @@ public class summaryPanel extends JPanel {
 		logOutPanel.setLayout(fLayout);
 		logOutPanel.add(logOut);
 		
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
 		setBorder(apiFetchFunction.createTitle("Summary"));
-
-		JLabel favoritesLabel = new JLabel("Favorites");
-		JLabel sumLabel = new JLabel("Highest Increases/Decreases");
 		
-		add(sumLabel, BorderLayout.CENTER);
-		add(favoritesLabel, BorderLayout.NORTH);
-		add(logOutPanel, BorderLayout.SOUTH);
+		GridLayout grid = new GridLayout(5,1);
+		setLayout(grid);
+				
+		JLabel favLabel = new JLabel("Favorites");
+		JTextArea favText = new JTextArea();
+		JTextArea stockText = new JTextArea();
+		for(int i=0;i<favorites.size();i++)	{
+			favText.setText(favText.getText() + favorites.get(i) + "\n");
+		}
+		for(int i=0;i<favorites.size();i++)	{
+			stockText.setText(stockText.getText() + myStocks.get(i) +"\n");
+		}
+				
+		favText.setEditable(false);
+		stockText.setEditable(false);
+		JLabel sumLabel = new JLabel("Highest Increases/Decreases");
+
+		add(favLabel);
+		add(favText);
+		add(sumLabel);
+		add(stockText);
+		add(logOutPanel);
+		
+		//logout button
+		logOut.addActionListener(new ActionListener() {  
+		    public void actionPerformed(ActionEvent e) {  
+		    	 menu.setVisible(true);
+		         frame.setVisible(false);
+		    }  
+		    }); 
 	}
 }
