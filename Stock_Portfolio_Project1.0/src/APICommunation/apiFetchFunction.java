@@ -42,7 +42,10 @@ public class apiFetchFunction {
 				JScrollPane yourStocksScroll = new JScrollPane(yourSPanel);
 				JScrollPane dataScroll = new JScrollPane(dPanel);
 				JScrollPane stockSearchScroll = new JScrollPane(sSearchPanel);
+				//stockSearchScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				
 				JScrollPane helpScoll = new JScrollPane(hPanel);
+				
 
 				//add tabs to the tab panel
 				tp.addTab("Summary", summaryScroll);
