@@ -315,12 +315,11 @@ public class stockSearchPanel extends JPanel {
 
 	        // adds data to series to be used in chart
 	        for (int i = 0; i < closedPrices.size(); i++) {
-	        	System.out.println("entering graph: " + Double.parseDouble(closedPrices.elementAt(i)));
 		        
 	        	//parse dates to accurately fit prices
-		        Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(priceDates.get(i));//dont forget to clear this vector before
+		        Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(priceDates.get(i));
 		        String daysStr = new SimpleDateFormat("MM.dd").format(date1);
-		        System.out.println("day: " + daysStr);
+		        //System.out.println("day: " + daysStr);
 		        
 		        series.add(new Day(date1), Double.parseDouble(closedPrices.elementAt(i)));
 	        }	//first input param is x axis, 2nds is y axis
