@@ -3,6 +3,7 @@ package APICommunation;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -27,8 +28,35 @@ public class apiFetchFunction {
 	public static JFrame menu = new JFrame("Stock Ticker Menu");
 	//initialize frame for UI
 	public static JFrame frame = new JFrame("Stock Ticker");
+	static MongoConnect mConnect = new MongoConnect();
 	
 	public static void main(String[] args) throws Exception {
+		
+		
+		//linday's code
+		System.out.print("Enter Username");
+        Scanner scan = new Scanner(System.in);
+        String getUser = scan.next();
+        getUser.trim();
+        
+        System.out.print("Enter Password");
+        String getPass = scan.next();
+        getPass.trim();
+        scan.close();
+        //login(getUser, getPass);
+        Boolean userNameExists;
+        userNameExists = mConnect.checkUsernameExist(getUser);
+      
+        if(userNameExists == false) {
+        	        	mConnect.createUser(getUser, getPass);
+        }
+		
+		
+		
+		
+		
+		
+		
 		
 		//create menu frame
 
