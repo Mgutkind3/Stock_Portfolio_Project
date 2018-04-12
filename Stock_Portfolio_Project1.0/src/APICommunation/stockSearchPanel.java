@@ -1,4 +1,5 @@
-package APICommunation;
+package csi480;
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -358,4 +359,3 @@ public class stockSearchPanel extends JPanel {
 	    }
 
 }//end of class
-

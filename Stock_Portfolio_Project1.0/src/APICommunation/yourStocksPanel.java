@@ -1,4 +1,5 @@
-package APICommunation;
+package csi480;
+
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -8,7 +9,7 @@ public class yourStocksPanel extends JPanel {
 	private apiFetchFunction cTitle = new apiFetchFunction();
 	
 	public yourStocksPanel() {
-		setBorder(cTitle.createTitle("Your Stocks"));
+		setBorder(apiFetchFunction.createTitle("Your Stocks"));
 
 		String[] stockString = { "All", "Favorites" };
 		JComboBox<String> combo1 = new JComboBox<String>(stockString);
