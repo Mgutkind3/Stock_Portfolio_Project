@@ -2,11 +2,10 @@ package csi480;
 
 import java.awt.BorderLayout;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -32,69 +31,55 @@ public class dataPanel extends JPanel implements ActionListener {
 	private parseSpecificStockData data = new parseSpecificStockData();
 	final String baseUrl = "https://api.iextrading.com/1.0/";
 	private int testStock = 1;
-	private JPanel graphPanel;
+	private JPanel graphPanel = new JPanel();
 
 	public dataPanel() {
 		final JButton btnRandom = new JButton("Random Graph");
 		final JButton btnAdd = new JButton("Add Series");
-
 		setBorder(apiFetchFunction.createTitle("Data"));
 
 		// get api response for all stocks and stock symbols available
 		getAPIStocks(baseUrl + "ref-data/symbols", 0, null);
 
-		setLayout(new BorderLayout());// TODO pick a better layout
-		graphPanel = new JPanel(new BorderLayout());
+		this.setLayout(new BorderLayout());// TODO pick a better layout
+		this.graphPanel.setLayout(new BorderLayout());
 
-		 cp.setxAxsis("Days");
-		 cp.setyAxsis("Dollars");
-
-		// createChart();
-		// cp.createChart();
-		// graphPanel.add(cp.getChart());
+		this.cp.setxAxsis("Days");
+		this.cp.setyAxsis("Dollars");
 
 		btnRandom.setActionCommand("RANDOM");
 		btnRandom.addActionListener(this);
 		btnAdd.setActionCommand("ADD_DATASET");
 		btnAdd.addActionListener(this);
+				
 
-		add(graphPanel);
-		add(btnRandom, BorderLayout.NORTH);
-		add(btnAdd, BorderLayout.SOUTH);
-		btnRandom.doClick();
-	}
-/*
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(200, 200);
-	}
+		this.add(graphPanel, BorderLayout.CENTER);
+		this.add(btnRandom, BorderLayout.NORTH);
+		this.add(btnAdd, BorderLayout.SOUTH);
+		this.updateChart();
+		this.revalidate();
+		this.repaint();
+		}
 
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.dispose();
-	}
-*/
+		
 	public void actionPerformed(final ActionEvent e) {
-
 		if (e.getActionCommand().equals("ADD_DATASET")) {
-
-			cp.removeAll();
-			createChart();
-			graphPanel.add(cp.getChart());
-			revalidate();
-			repaint();
+			updateChart();
 		} else if (e.getActionCommand().equals("RANDOM")) {
-			
 			cp.removeAllDataset();
 			cp.setTitle("");
-			
-			cp.removeAll();
-			createChart();
-			graphPanel.add(cp.getChart());
-			revalidate();
-			repaint();
+			updateChart();
 		}
+
+	}
+
+	private void updateChart() {
+		cp.removeAll();
+		createChart();
+		graphPanel.add(cp.getChart(), BorderLayout.CENTER);
+		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+		revalidate();
+		repaint();
 
 	}
 
@@ -103,7 +88,7 @@ public class dataPanel extends JPanel implements ActionListener {
 		testStock = new Random().nextInt(companyNames.size() - 1);
 		getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbols.get(testStock) + "&types=quote,news,chart", 1,
 				symbols.get(testStock));
-		cp.setTitle(companyNames.get(testStock)+"\n"+cp.getTitle());
+		cp.setTitle(companyNames.get(testStock) + "\n" + cp.getTitle());
 		XYSeries series = new XYSeries(symbols.get(testStock));
 
 		// adds data to series to be used in chart
@@ -115,7 +100,6 @@ public class dataPanel extends JPanel implements ActionListener {
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
 		cp.addDataset(dataset);
-		
 
 	}
 
