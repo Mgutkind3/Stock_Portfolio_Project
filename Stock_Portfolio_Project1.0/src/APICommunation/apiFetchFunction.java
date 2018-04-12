@@ -33,7 +33,7 @@ public class apiFetchFunction {
 	public static void main(String[] args) throws Exception {
 		
 		
-		//linday's code
+		//lindsay's code to sign into the database (in AWS cloud)
 		System.out.print("Enter Username");
         Scanner scan = new Scanner(System.in);
         String getUser = scan.next();

@@ -1,6 +1,8 @@
 package APICommunation;
 
-import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
@@ -18,16 +20,16 @@ public class chartPanel extends JPanel {
 	private XYPlot xyPlot;
 	private String xAxis;
 	private String yAxis;
-	private String title = "";
+	private String title;
 	private JFreeChart chart;
 	private int datasetIndex = 0;
-
+private final int SIZE_CONSTANT =50;
 	private ArrayList<XYSeriesCollection> dataset = new ArrayList<XYSeriesCollection>();
 
 	public chartPanel() {
-		setxAxsis("Days");
-		setyAxsis("Price");
-
+		xAxis = "Time";
+		yAxis = "Price";
+		title = "Title";
 		chart = ChartFactory.createXYLineChart(title, // Title
 				xAxis, // x-axis Label
 				yAxis, // y-axis Label
@@ -62,8 +64,29 @@ public class chartPanel extends JPanel {
 		);
 
 		this.xyPlot = chart.getXYPlot();
+		xyPlot.setDomainCrosshairVisible(true);
+		xyPlot.setRangeCrosshairVisible(true);
+
+		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
+		range.setAutoRange(true);
+		range.setAutoRangeIncludesZero(false);
+		
+		
 	}
 
+	 /*
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(700, 700);
+	}
+	
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g.create();
+		g2d.dispose();
+	}
+	
+*/	
 	public String getTitle() {
 		return title;
 	}
@@ -105,12 +128,17 @@ public class chartPanel extends JPanel {
 		for (int i = dataset.size() - 1; i >= 0; i--) {
 			this.dataset.get(i).getSeries().clear();
 		}
-		this.datasetIndex=0;
+		this.datasetIndex = 0;
 		refreshChart();
 	}
 
 	public chartPanel getChart() {
-		this.add(new ChartPanel(chart));
+		ChartPanel c = new ChartPanel(chart);
+		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
+		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
+
+		//c.setMaximumSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
+		this.add(c);
 		return this;
 	}
 
