@@ -1,4 +1,4 @@
-package APICommunation;
+package csi480;
 
 import java.io.BufferedReader;
 import java.io.IOException;

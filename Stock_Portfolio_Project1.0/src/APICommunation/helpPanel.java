@@ -1,4 +1,5 @@
-package APICommunation;
+package csi480;
+
 
 import javax.swing.JPanel;
 
@@ -8,6 +9,6 @@ public class helpPanel extends JPanel {
 	
 	public helpPanel() {
 		
-		setBorder(cTitle.createTitle("Help"));
+		setBorder(apiFetchFunction.createTitle("Help"));
 	}
 }

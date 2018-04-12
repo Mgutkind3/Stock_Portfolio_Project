@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -49,33 +51,51 @@ public class dataPanel extends JPanel implements ActionListener {
 		btnRandom.addActionListener(this);
 		btnAdd.setActionCommand("ADD_DATASET");
 		btnAdd.addActionListener(this);
+	
+		
+		graphPanel.addComponentListener(new ComponentAdapter(){
+			@Override
+			public void componentResized(ComponentEvent e){
+				redrawChart();
+				graphPanel.repaint();
+			}
+		});
 
 		this.add(graphPanel, BorderLayout.CENTER);
 		this.add(btnRandom, BorderLayout.NORTH);
 		this.add(btnAdd, BorderLayout.SOUTH);
 		this.updateChart();
-	}
+		this.revalidate();
+		this.repaint();
+		}
 
+		
 	public void actionPerformed(final ActionEvent e) {
-
 		if (e.getActionCommand().equals("ADD_DATASET")) {
-
 			updateChart();
 		} else if (e.getActionCommand().equals("RANDOM")) {
-
 			cp.removeAllDataset();
 			cp.setTitle("");
 			updateChart();
-
 		}
 
 	}
 
+	private void redrawChart(){
+		cp.removeAll();
+		graphPanel.add(cp.getChart(), BorderLayout.CENTER);
+		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+		revalidate();
+		repaint();
+	}
+	
 	private void updateChart() {
 		cp.removeAll();
 		createChart();
 		graphPanel.add(cp.getChart(), BorderLayout.CENTER);
+		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
+		repaint();
 
 	}
 

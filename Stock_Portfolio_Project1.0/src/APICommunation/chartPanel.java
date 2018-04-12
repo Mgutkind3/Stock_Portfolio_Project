@@ -1,19 +1,15 @@
 package csi480;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class chartPanel extends JPanel {
@@ -23,7 +19,7 @@ public class chartPanel extends JPanel {
 	private String title;
 	private JFreeChart chart;
 	private int datasetIndex = 0;
-private final int SIZE_CONSTANT =50;
+	private final int SIZE_CONSTANT =50;
 	private ArrayList<XYSeriesCollection> dataset = new ArrayList<XYSeriesCollection>();
 
 	public chartPanel() {
@@ -44,12 +40,11 @@ private final int SIZE_CONSTANT =50;
 		xyPlot.setDomainCrosshairVisible(true);
 		xyPlot.setRangeCrosshairVisible(true);
 
-		// XYItemRenderer renderer = xyPlot.getRenderer();
-		// renderer.setSeriesPaint(0, Color.blue);
-
 		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
+		
+		
 	}
 
 	private void refreshChart() {
@@ -71,23 +66,8 @@ private final int SIZE_CONSTANT =50;
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
 		
-		
 	}
 
-	 /*
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(700, 700);
-	}
-
-	
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.dispose();
-	}
-	
-*/	
 	public String getTitle() {
 		return title;
 	}
@@ -118,7 +98,6 @@ private final int SIZE_CONSTANT =50;
 	}
 
 	public void addDataset(XYSeriesCollection data) {
-
 		this.xyPlot.setDataset(this.datasetIndex, data);
 		this.xyPlot.setRenderer(this.datasetIndex, new StandardXYItemRenderer());
 		this.datasetIndex++;
@@ -137,8 +116,6 @@ private final int SIZE_CONSTANT =50;
 		ChartPanel c = new ChartPanel(chart);
 		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
 		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
-
-		//c.setMaximumSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
 		this.add(c);
 		return this;
 	}

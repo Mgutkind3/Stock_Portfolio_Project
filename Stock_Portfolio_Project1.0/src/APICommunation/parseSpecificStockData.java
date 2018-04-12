@@ -1,85 +1,95 @@
-package APICommunation;
+package csi480;
 
 public class parseSpecificStockData {
 
-private String companyName; 
-private String sector;
-private String openPrice; 
-private String closePrice;
-private String highPrice;
-private String lowPrice;
-private String latestPrice;
-private String peRatio;
-private String week52High;
-private String week52Low;
+	private String companyName;
+	private String sector;
+	private String openPrice;
+	private String closePrice;
+	private String highPrice;
+	private String lowPrice;
+	private String latestPrice;
+	private String peRatio;
+	private String week52High;
+	private String week52Low;
 
-public String getCompanyName() {
-	return companyName;
-}
-public void setCompanyName(String companyName) {
-	this.companyName = companyName;
-}
+	public String getCompanyName() {
+		return companyName;
+	}
 
-public String getSector() {
-	return sector;
-}
-public void setSector(String sector) {
-	this.sector = sector;
-}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 
-public String getOpenPrice() {
-	return openPrice;
-}
-public void setOpenPrice(String openPrice) {
-	this.openPrice = openPrice;
-}
+	public String getSector() {
+		return sector;
+	}
 
-public String getClosePrice() {
-	return closePrice;
-}
-public void setClosePrice(String closePrice) {
-	this.closePrice = closePrice;
-}
+	public void setSector(String sector) {
+		this.sector = sector;
+	}
 
-public String getHighPrice() {
-	return highPrice;
-}
-public void setHighPrice(String highPrice) {
-	this.highPrice = highPrice;
-}
+	public String getOpenPrice() {
+		return openPrice;
+	}
 
-public String getLowPrice() {
-	return lowPrice;
-}
-public void setLowPrice(String lowPrice) {
-	this.lowPrice = lowPrice;
-}
+	public void setOpenPrice(String openPrice) {
+		this.openPrice = openPrice;
+	}
 
-public String getLatestPrice() {
-	return latestPrice;
-}
-public void setLatestPrice(String latestPrice) {
-	this.latestPrice = latestPrice;
-}
+	public String getClosePrice() {
+		return closePrice;
+	}
 
-public String getPeRatio() {
-	return peRatio;
-}
-public void setPeRatio(String peRatio) {
-	this.peRatio = peRatio;
-}
+	public void setClosePrice(String closePrice) {
+		this.closePrice = closePrice;
+	}
 
-public String getWeek52High() {
-	return week52High;
-}
-public void setWeek52High(String week52High) {
-	this.week52High = week52High;
-}
+	public String getHighPrice() {
+		return highPrice;
+	}
 
-public String getWeek52Low() {
-	return week52Low;
-}
-public void setWeek52Low(String week52Low) {
-	this.week52Low = week52Low;
-}
+	public void setHighPrice(String highPrice) {
+		this.highPrice = highPrice;
+	}
+
+	public String getLowPrice() {
+		return lowPrice;
+	}
+
+	public void setLowPrice(String lowPrice) {
+		this.lowPrice = lowPrice;
+	}
+
+	public String getLatestPrice() {
+		return latestPrice;
+	}
+
+	public void setLatestPrice(String latestPrice) {
+		this.latestPrice = latestPrice;
+	}
+
+	public String getPeRatio() {
+		return peRatio;
+	}
+
+	public void setPeRatio(String peRatio) {
+		this.peRatio = peRatio;
+	}
+
+	public String getWeek52High() {
+		return week52High;
+	}
+
+	public void setWeek52High(String week52High) {
+		this.week52High = week52High;
+	}
+
+	public String getWeek52Low() {
+		return week52Low;
+	}
+
+	public void setWeek52Low(String week52Low) {
+		this.week52Low = week52Low;
+	}
 }
