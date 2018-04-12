@@ -23,7 +23,7 @@ public class chartPanel extends JPanel {
 	private String title;
 	private JFreeChart chart;
 	private int datasetIndex = 0;
-
+private final int SIZE_CONSTANT =50;
 	private ArrayList<XYSeriesCollection> dataset = new ArrayList<XYSeriesCollection>();
 
 	public chartPanel() {
@@ -74,19 +74,20 @@ public class chartPanel extends JPanel {
 		
 	}
 
-	/*
+	 /*
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(500, 500);
+		return new Dimension(700, 700);
 	}
 
+	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.dispose();
 	}
-*/	
 	
+*/	
 	public String getTitle() {
 		return title;
 	}
@@ -133,8 +134,12 @@ public class chartPanel extends JPanel {
 	}
 
 	public chartPanel getChart() {
-		this.add(new ChartPanel(chart));
-		//this.setSize(500, 500);
+		ChartPanel c = new ChartPanel(chart);
+		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
+		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
+
+		//c.setMaximumSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
+		this.add(c);
 		return this;
 	}
 
