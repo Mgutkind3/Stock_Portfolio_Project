@@ -10,6 +10,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class chartPanel extends JPanel {
@@ -18,10 +19,13 @@ public class chartPanel extends JPanel {
 	private String yAxis;
 	private String title;
 	private JFreeChart chart;
+	private JFreeChart timeChart;
 	private int datasetIndex = 0;
 	private final int SIZE_CONSTANT =50;
-	private ArrayList<XYSeriesCollection> dataset = new ArrayList<XYSeriesCollection>();
+	private ArrayList<XYSeriesCollection> xySeries = new ArrayList<XYSeriesCollection>();
+	private ArrayList<TimeSeriesCollection> timeSeries = new ArrayList<TimeSeriesCollection>();
 
+	
 	public chartPanel() {
 		xAxis = "Time";
 		yAxis = "Price";
@@ -94,7 +98,7 @@ public class chartPanel extends JPanel {
 	}
 
 	public ArrayList<XYSeriesCollection> getDataset() {
-		return dataset;
+		return xySeries;
 	}
 
 	public void addDataset(XYSeriesCollection data) {
@@ -105,14 +109,15 @@ public class chartPanel extends JPanel {
 	}
 
 	public void removeAllDataset() {
-		for (int i = dataset.size() - 1; i >= 0; i--) {
-			this.dataset.get(i).getSeries().clear();
+		for (int i = xySeries.size() - 1; i >= 0; i--) {
+			this.xySeries.get(i).getSeries().clear();
+			this.timeSeries.get(i).getSeries().clear();
 		}
 		this.datasetIndex = 0;
 		refreshChart();
 	}
 
-	public chartPanel getChart() {
+	public chartPanel getXYChart() {
 		ChartPanel c = new ChartPanel(chart);
 		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
 		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
@@ -120,8 +125,44 @@ public class chartPanel extends JPanel {
 		return this;
 	}
 
+	public chartPanel getTimeSeriesChart(){
+		timeChart = ChartFactory.createXYLineChart(title, // Title
+				xAxis, // x-axis Label
+				yAxis, // y-axis Label
+				null, // Dataset
+				PlotOrientation.VERTICAL, // Plot Orientation
+				true, // Show Legend
+				true, // Use tooltips
+				false // Configure chart to generate URLs?
+		);
+
+		this.xyPlot = timeChart.getXYPlot();
+		xyPlot.setDomainCrosshairVisible(true);
+		xyPlot.setRangeCrosshairVisible(true);
+
+		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
+		range.setAutoRange(true);
+		range.setAutoRangeIncludesZero(false);
+		
+		
+		ChartPanel c = new ChartPanel(timeChart);
+		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
+		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
+		this.add(c);
+		return this;
+	}
+	
+	
 	public XYSeriesCollection getXYSeries(int datasetIndex) {
-		return dataset.get(datasetIndex);
+		return xySeries.get(datasetIndex);
+	}
+
+	public void addDataset(TimeSeriesCollection dataset2) {
+		this.xyPlot.setDataset(this.datasetIndex,dataset2);
+		this.xyPlot.setRenderer(this.datasetIndex, new StandardXYItemRenderer());
+		this.datasetIndex++;
+
+		
 	}
 
 }
