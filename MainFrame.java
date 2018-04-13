@@ -59,7 +59,6 @@ public class MainFrame {
 
 		// initialize frame for UI
 
-
 		frame.setSize(850, 750);
 		JTabbedPane tp = new JTabbedPane();
 

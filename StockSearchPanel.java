@@ -248,16 +248,14 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 		//graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
-
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();
 
 	}
-
+//TODO make it work as a timeSeries chart
 	private void redrawChart() {
 		cp.removeAll();
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
@@ -378,7 +376,6 @@ public class StockSearchPanel extends JPanel {
 
 		// Add the series to your data set
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
-
 		dataset.addSeries(series);	
 		this.cp.addDataset(dataset);
 		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
