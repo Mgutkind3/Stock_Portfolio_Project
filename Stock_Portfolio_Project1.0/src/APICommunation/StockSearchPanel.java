@@ -3,8 +3,6 @@ package csi480;
 import java.awt.BorderLayout;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +13,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -27,8 +24,6 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,6 +81,7 @@ public class StockSearchPanel extends JPanel {
 
 		// JButton
 		JButton submitButton = new JButton("Submit");
+		JButton addButton = new JButton("Add to graph");
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
@@ -96,8 +92,8 @@ public class StockSearchPanel extends JPanel {
 		searchBarGrid.add(titleInstructionsSymb);
 		searchBarGrid.add(searchBarSymb);
 		searchBarGrid.add(submitButton);
-
-		searchBarGrid.setPreferredSize(new Dimension(250, 500));
+		searchBarGrid.add(addButton);
+		//searchBarGrid.setPreferredSize(new Dimension(250, 500));
 
 		// JPanel for data results (middle panel)
 		JPanel dataResultsGrid = new JPanel();
@@ -114,19 +110,18 @@ public class StockSearchPanel extends JPanel {
 			}
 		});
 
-		submitButton.addActionListener(new ActionListener() {
-
+		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				// remove current stocks data
 				dataResultsGrid.removeAll();
-				cp.removeAllDataset();
 				closedPrices.clear();
 				priceDates.clear();
 				headlines.clear();
 				urlSources.clear();
 
 				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
-testSymbol=symbolSelected;
+				testSymbol = symbolSelected;
 				// use latest price field for the latest price (never null)
 				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
 						symbolSelected);
@@ -154,6 +149,65 @@ testSymbol=symbolSelected;
 				dataResultsGrid.add(week52High);
 				dataResultsGrid.add(week52Low);
 
+				// create two open columns between data
+				// for(int i = 0; i < 4; i++){
+				// searchBarGrid.add(new JLabel(" "));
+				// }
+
+				// searchBarGrid.add(new JLabel("NEWS"));
+				// make this jlabel a hyperlink for the source
+				// JLabel for popular news about the stock
+				// for(int i = 0; i < headlines.size(); i++){
+				// chartPanel.add(new JLabel(headlines.elementAt(i)));
+				// }
+				// + ", Source: " + urlSources.elementAt(i)));
+				// fix bug where a null input will crash the program
+				updateChart();
+				revalidate();
+				repaint();
+
+			}
+		});
+
+		submitButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				// remove current stocks data
+				dataResultsGrid.removeAll();
+				cp.removeAllDataset();
+				closedPrices.clear();
+				priceDates.clear();
+				headlines.clear();
+				urlSources.clear();
+
+				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
+				testSymbol = symbolSelected;
+				// use latest price field for the latest price (never null)
+				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
+						symbolSelected);
+
+				// JLabel's for the specific stock data and fields
+				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
+				JLabel latestPrice = new JLabel("           Price: $" + specificStockFields.getLatestPrice());
+				JLabel sector = new JLabel("           Sector: " + specificStockFields.getSector());
+				JLabel openPrice = new JLabel("           Open Price: $" + specificStockFields.getOpenPrice());
+				JLabel closePrice = new JLabel("           Close Price: $" + specificStockFields.getClosePrice());
+				JLabel highPrice = new JLabel("           High Price: $" + specificStockFields.getHighPrice());
+				JLabel lowPrice = new JLabel("           Low Price: $" + specificStockFields.getLowPrice());
+				JLabel peRatio = new JLabel("           Per Earnings Ratio: $" + specificStockFields.getPeRatio());
+				JLabel week52High = new JLabel("           Week 52 High: $" + specificStockFields.getWeek52High());
+				JLabel week52Low = new JLabel("           Week 52 Low: $" + specificStockFields.getWeek52Low());
+				// add JLabel fields to the UI screen
+				dataResultsGrid.add(data);
+				dataResultsGrid.add(latestPrice);
+				dataResultsGrid.add(sector);
+				dataResultsGrid.add(openPrice);
+				dataResultsGrid.add(closePrice);
+				dataResultsGrid.add(highPrice);
+				dataResultsGrid.add(lowPrice);
+				dataResultsGrid.add(peRatio);
+				dataResultsGrid.add(week52High);
+				dataResultsGrid.add(week52Low);
 
 				// create two open columns between data
 				// for(int i = 0; i < 4; i++){
@@ -180,7 +234,7 @@ testSymbol=symbolSelected;
 
 		// add panels to main menu border layout
 		this.add(searchBarGrid, BorderLayout.LINE_START);
-		this.add(dataResultsGrid, BorderLayout.CENTER);
+		this.add(dataResultsGrid, BorderLayout.LINE_END);
 		this.add(graphPanel, BorderLayout.CENTER);
 		submitButton.doClick();
 		this.revalidate();
@@ -194,19 +248,18 @@ testSymbol=symbolSelected;
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
+		// graphPanel.add(cp.XYChart, BorderLayout.CENTER);
+		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();
 
 	}
-	
-	
 
 	private void redrawChart() {
 		cp.removeAll();
-		//graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
+		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
+		//graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();

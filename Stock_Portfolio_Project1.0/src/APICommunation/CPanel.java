@@ -1,11 +1,13 @@
 package csi480;
 
 import java.awt.Dimension;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -21,11 +23,10 @@ public class CPanel extends JPanel {
 	private JFreeChart chart;
 	private JFreeChart timeChart;
 	private int datasetIndex = 0;
-	private final int SIZE_CONSTANT =50;
+	private final int SIZE_CONSTANT = 50;
 	private ArrayList<XYSeriesCollection> xySeries = new ArrayList<XYSeriesCollection>();
 	private ArrayList<TimeSeriesCollection> timeSeries = new ArrayList<TimeSeriesCollection>();
 
-	
 	public CPanel() {
 		xAxis = "Time";
 		yAxis = "Price";
@@ -47,8 +48,7 @@ public class CPanel extends JPanel {
 		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
-		
-		
+
 	}
 
 	private void refreshChart() {
@@ -69,7 +69,7 @@ public class CPanel extends JPanel {
 		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
-		
+
 	}
 
 	public String getTitle() {
@@ -111,26 +111,31 @@ public class CPanel extends JPanel {
 	public void removeAllDataset() {
 		for (int i = xySeries.size() - 1; i >= 0; i--) {
 			this.xySeries.get(i).getSeries().clear();
+
+		}
+
+		for (int i = timeSeries.size() - 1; i >= 0; i--) {
 			this.timeSeries.get(i).getSeries().clear();
 		}
+
 		this.datasetIndex = 0;
 		refreshChart();
 	}
 
 	public CPanel getXYChart() {
 		ChartPanel c = new ChartPanel(chart);
-		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
-		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
+		c.setPreferredSize(new Dimension(this.getWidth() - SIZE_CONSTANT, this.getHeight() - SIZE_CONSTANT));
+		c.setSize(new Dimension(this.getWidth() - SIZE_CONSTANT, this.getHeight() - SIZE_CONSTANT));
 		this.add(c);
 		return this;
 	}
 
-	public CPanel getTimeSeriesChart(){
-		timeChart = ChartFactory.createXYLineChart(title, // Title
+	public CPanel getTimeSeriesChart() {
+		xAxis = "Date";
+		timeChart = ChartFactory.createTimeSeriesChart(title, // Title
 				xAxis, // x-axis Label
 				yAxis, // y-axis Label
 				null, // Dataset
-				PlotOrientation.VERTICAL, // Plot Orientation
 				true, // Show Legend
 				true, // Use tooltips
 				false // Configure chart to generate URLs?
@@ -143,26 +148,26 @@ public class CPanel extends JPanel {
 		NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
-		
-		
+
+		DateAxis domain = (DateAxis) xyPlot.getDomainAxis();
+		domain.setDateFormatOverride(new SimpleDateFormat("MM/dd"));
+
 		ChartPanel c = new ChartPanel(timeChart);
-		c.setPreferredSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));
-		c.setSize(new Dimension(this.getWidth()-SIZE_CONSTANT,this.getHeight()-SIZE_CONSTANT));	
+		c.setPreferredSize(new Dimension(this.getWidth() - SIZE_CONSTANT, this.getHeight() - SIZE_CONSTANT));
+		c.setSize(new Dimension(this.getWidth() - SIZE_CONSTANT, this.getHeight() - SIZE_CONSTANT));
 		this.add(c);
 		return this;
 	}
-	
-	
+
 	public XYSeriesCollection getXYSeries(int datasetIndex) {
 		return xySeries.get(datasetIndex);
 	}
 
 	public void addDataset(TimeSeriesCollection dataset2) {
-		this.xyPlot.setDataset(this.datasetIndex,dataset2);
+		this.xyPlot.setDataset(this.datasetIndex, dataset2);
 		this.xyPlot.setRenderer(this.datasetIndex, new StandardXYItemRenderer());
 		this.datasetIndex++;
 
-		
 	}
 
 }
