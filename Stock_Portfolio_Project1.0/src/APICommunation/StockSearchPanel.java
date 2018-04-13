@@ -42,7 +42,7 @@ public class StockSearchPanel extends JPanel {
 	private Vector<String> headlines = new Vector<String>();
 	private Vector<String> symbols = new Vector<String>();
 	private Vector<String> companyNames = new Vector<String>();
-	private chartPanel cp = new chartPanel();
+	private CPanel cp = new CPanel();
 	private JPanel graphPanel = new JPanel();
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
@@ -217,7 +217,7 @@ testSymbol=symbolSelected;
 
 		try {
 			URL url = new URL(urlString);
-			String jsonResult = apiFetch.getJson(url.toString());
+			String jsonResult = ApiFetch.getJson(url.toString());
 			// System.out.println(jsonResult);
 			// parse differently according to call
 			if (flag == 0) {

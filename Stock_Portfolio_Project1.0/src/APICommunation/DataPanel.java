@@ -33,7 +33,7 @@ public class DataPanel extends JPanel implements ActionListener {
 	private Vector<String> symbols = new Vector<String>();
 	private Vector<String> companyNames = new Vector<String>();
 	private Vector<String> priceDates = new Vector<String>();
-	private chartPanel cp = new chartPanel();
+	private CPanel cp = new CPanel();
 
 	private ParseSpecificStockData data = new ParseSpecificStockData();
 	final String baseUrl = "https://api.iextrading.com/1.0/";
@@ -152,7 +152,7 @@ public class DataPanel extends JPanel implements ActionListener {
 
 		try {
 			URL url = new URL(urlString);
-			String jsonResult = apiFetch.getJson(url.toString());
+			String jsonResult = ApiFetch.getJson(url.toString());
 
 			// parse differently according to call
 			if (flag == 0) {
