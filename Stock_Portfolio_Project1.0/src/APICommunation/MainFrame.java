@@ -59,7 +59,8 @@ public class MainFrame {
 
 		// initialize frame for UI
 
-		frame.setSize(750, 650);
+
+		frame.setSize(850, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page

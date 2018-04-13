@@ -248,7 +248,9 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		// graphPanel.add(cp.XYChart, BorderLayout.CENTER);
+
+		//graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
+
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
@@ -376,7 +378,8 @@ public class StockSearchPanel extends JPanel {
 
 		// Add the series to your data set
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
+
+		dataset.addSeries(series);	
 		this.cp.addDataset(dataset);
 		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
 	}
