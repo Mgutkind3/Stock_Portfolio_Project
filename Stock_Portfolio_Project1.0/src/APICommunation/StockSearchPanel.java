@@ -3,6 +3,7 @@ package csi480;
 import java.awt.BorderLayout;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +40,7 @@ public class StockSearchPanel extends JPanel {
 	private Vector<String> companyNames = new Vector<String>();
 	private CPanel cp = new CPanel();
 	private JPanel graphPanel = new JPanel();
+	private JPanel buttonPanel = new JPanel();
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
 	private String testSymbol;
@@ -83,6 +85,10 @@ public class StockSearchPanel extends JPanel {
 		JButton submitButton = new JButton("Submit");
 		JButton addButton = new JButton("Add to graph");
 		JButton addFavoite = new JButton("Add to favorites");
+		JButton dayButton = new JButton ("Day");
+		JButton monthButton = new JButton("Month");
+		JButton halfYearButton = new JButton("6 Months");
+		JButton yearButton = new JButton("Year");
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
@@ -242,6 +248,14 @@ public class StockSearchPanel extends JPanel {
 		AutoCompleteDecorator.decorate(searchBarNames);
 		AutoCompleteDecorator.decorate(searchBarSymb);
 
+		
+		buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.add(dayButton);
+		buttonPanel.add(monthButton);
+		buttonPanel.add(halfYearButton);
+		buttonPanel.add(yearButton);
+		graphPanel.add(buttonPanel,BorderLayout.SOUTH);
+		
 		// add panels to main menu border layout
 		this.add(searchBarGrid, BorderLayout.LINE_START);
 		this.add(dataResultsGrid, BorderLayout.LINE_END);
