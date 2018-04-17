@@ -82,6 +82,7 @@ public class StockSearchPanel extends JPanel {
 		// JButton
 		JButton submitButton = new JButton("Submit");
 		JButton addButton = new JButton("Add to graph");
+		JButton addFavoite = new JButton("Add to favorites");
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
@@ -93,6 +94,7 @@ public class StockSearchPanel extends JPanel {
 		searchBarGrid.add(searchBarSymb);
 		searchBarGrid.add(submitButton);
 		searchBarGrid.add(addButton);
+		searchBarGrid.add(addFavoite);
 		//searchBarGrid.setPreferredSize(new Dimension(250, 500));
 
 		// JPanel for data results (middle panel)
@@ -110,6 +112,14 @@ public class StockSearchPanel extends JPanel {
 			}
 		});
 
+		addFavoite.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//add to favites list
+				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()));
+			}
+		});
+		
+		
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -248,16 +258,13 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 		//graphPanel.add(cp.getXYChart(), BorderLayout.CENTER);
-
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();
 
 	}
-
 	private void redrawChart() {
 		cp.removeAll();
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
@@ -378,7 +385,6 @@ public class StockSearchPanel extends JPanel {
 
 		// Add the series to your data set
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
-
 		dataset.addSeries(series);	
 		this.cp.addDataset(dataset);
 		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
