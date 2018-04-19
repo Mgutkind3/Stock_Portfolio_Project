@@ -41,6 +41,12 @@ public class StockSearchPanel extends JPanel {
 	private Vector<String> symbols = new Vector<String>();
 	private Vector<String> companyNames = new Vector<String>();
 	private Vector<String> monthPrices = new Vector<String>();
+	private Vector<String> monthDates = new Vector<String>();
+	private Vector<String> month6Prices = new Vector<String>();
+	private Vector<String> month6Dates = new Vector<String>();
+	private Vector<String> yearPrices = new Vector<String>();
+	private Vector<String> yearDates = new Vector<String>();
+	
 	private CPanel cp = new CPanel();
 	private JPanel graphPanel = new JPanel();
 	private JPanel buttonPanel = new JPanel();
@@ -54,7 +60,7 @@ public class StockSearchPanel extends JPanel {
 		this.cp.setyAxsis("Dollars");
 
 		// get api response for all stocks and stock symbols available
-		getAPIStocks(baseUrl + "ref-data/symbols", 0, null);
+		getAPIStocks(baseUrl + "ref-data/symbols", 0, null, 5);
 
 		// JComboBox for names
 		JComboBox<String> searchBarNames = new JComboBox<String>(companyNames);
@@ -89,25 +95,60 @@ public class StockSearchPanel extends JPanel {
 		JButton addButton = new JButton("Add to graph");
 		JButton addFavoite = new JButton("Add to favorites");
 		
+		//have variable for current symbol
 		
 		
-		//Time series JButtons and get last week
+		//Time series JButtons and get current time
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-M-d");  
 		   LocalDateTime now = LocalDateTime.now();  
 		   String todayDate = dtf.format(now).toString();
 		   
 		   
-		String lastMonthString = getMonthBefore();
-		   
+		//create 1 month calculation for api call
 		JButton monthButton = new JButton ("Month");
+		String lastMonthString = getMonthBefore(); 
+		monthButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//clear lists
+				monthPrices.clear();
+				monthDates.clear();
+
+				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
+				String monthCall = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany +".json?column_index=4&start_date=" + lastMonthString + "&end_date=" + todayDate + "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
+				getAPIStocks(monthCall, 2, null, 0);
+				
+			}
+		});
 		
-		String currentCompany = "FB";//make this dynamic eventually
-		String monthCall = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany +".json?column_index=4&start_date=" + lastMonthString + "&end_date=" + todayDate + "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
-		getAPIStocks(monthCall, 2, null);
-//		System.out.println(monthCall);
-		
+		//create half year calculation and api call
 		JButton halfYearButton = new JButton("6 Months");
+		String last6MonthString = get6MonthBefore(); 
+		halfYearButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				month6Prices.clear();
+				month6Dates.clear();
+				
+				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
+				String month6Call = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany +".json?column_index=4&start_date=" + last6MonthString + "&end_date=" + todayDate + "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
+				getAPIStocks(month6Call, 2, null, 1);
+				
+			}
+		});
+		
+		//create half year calculation and api call
 		JButton yearButton = new JButton("Year");
+		String yearString = getYearBefore();
+		yearButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				yearPrices.clear();
+				yearPrices.clear();
+				
+				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
+				String yearCall = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany +".json?column_index=4&start_date=" + yearString + "&end_date=" + todayDate + "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
+				getAPIStocks(yearCall, 2, null, 2);
+				
+			}
+		});
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
@@ -144,7 +185,6 @@ public class StockSearchPanel extends JPanel {
 			}
 		});
 		
-		
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -159,7 +199,7 @@ public class StockSearchPanel extends JPanel {
 				testSymbol = symbolSelected;
 				// use latest price field for the latest price (never null)
 				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
-						symbolSelected);
+						symbolSelected, 5);
 
 				// JLabel's for the specific stock data and fields
 				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
@@ -219,7 +259,7 @@ public class StockSearchPanel extends JPanel {
 				testSymbol = symbolSelected;
 				// use latest price field for the latest price (never null)
 				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
-						symbolSelected);
+						symbolSelected, 5);
 
 				// JLabel's for the specific stock data and fields
 				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
@@ -283,7 +323,7 @@ public class StockSearchPanel extends JPanel {
 		this.repaint();
 	}
 	
-	//function to get the day a week ago from today
+	//function to get the day a month ago from today
 	private String getMonthBefore(){
 		Date date = new Date();
 		   long DAY_IN_MS = 1000 * 60 * 60 * 24;
@@ -293,6 +333,30 @@ public class StockSearchPanel extends JPanel {
 		   String lastMonthString = lastMonth.getYear()+1900 + "-" + (lastMonth.getMonth()+1) + "-" + lastMonth.getDate();
 	
 		   return lastMonthString;
+	}
+	
+	//get 6 months ago from today
+	private String get6MonthBefore(){
+		Date date = new Date();
+		   long DAY_IN_MS = 1000 * 60 * 60 * 24;
+		   new Date(System.currentTimeMillis() - (30 * DAY_IN_MS));
+		   
+		   Date lastMonth = new Date(date.getTime() - (183 * DAY_IN_MS));
+		   String last6MonthString = lastMonth.getYear()+1900 + "-" + (lastMonth.getMonth()+1) + "-" + lastMonth.getDate();
+	
+		   return last6MonthString;
+	}
+	
+	//get year ago from today
+	private String getYearBefore(){
+		Date date = new Date();
+		   long DAY_IN_MS = 1000 * 60 * 60 * 24;
+		   new Date(System.currentTimeMillis() - (30 * DAY_IN_MS));
+		   
+		   Date lastMonth = new Date(date.getTime() - (365 * DAY_IN_MS));
+		   String last6MonthString = lastMonth.getYear()+1900 + "-" + (lastMonth.getMonth()+1) + "-" + lastMonth.getDate();
+	
+		   return last6MonthString;
 	}
 
 	private void updateChart() {
@@ -319,7 +383,7 @@ public class StockSearchPanel extends JPanel {
 	}
 
 	// get json from url and parse it in "parseAllStockjson"
-	public void getAPIStocks(String urlString, int flag, String symbol) {
+	public void getAPIStocks(String urlString, int flag, String symbol, int timeseriesFlag) {
 
 		try {
 			URL url = new URL(urlString);
@@ -332,11 +396,9 @@ public class StockSearchPanel extends JPanel {
 			if(flag == 1) {
 				// parse the specific stock information
 				parseSpecificStockJSON(jsonResult, symbol);
-				// System.out.println(jsonResult);
 			} 
 			if(flag == 2){
-				//System.out.println("json: " + jsonResult);
-				parseTimeSeriesJSON(jsonResult, 0);
+				parseTimeSeriesJSON(jsonResult, timeseriesFlag);
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -348,29 +410,43 @@ public class StockSearchPanel extends JPanel {
 	
 	//parse the timeseries data that is coming through
 	public void parseTimeSeriesJSON(String json, int flag) throws JSONException{
-		//System.out.println(json);
 		//parse month data
-		if(flag == 0){
+		
+		
 			JSONObject jObj = new JSONObject(json);
 			JSONObject dataset = jObj.getJSONObject("dataset");
 			JSONArray data = dataset.getJSONArray("data");
 			
 			for(int i = 0; i < data.length(); i++){
-				JSONArray monthPrices = data.getJSONArray(i);
-				String monthPricesString = monthPrices.getString(1);
+				JSONArray monthPricesArr = data.getJSONArray(i);
+				String monthPricesString = monthPricesArr.getString(1);
+				String monthDatesString = monthPricesArr.getString(0);
 				
+				//parse month data
+				if(flag == 0){
+
+				monthPrices.addElement(monthPricesString);
+				monthDates.addElement(monthDatesString);
 				System.out.println("dataset: "+ monthPricesString);
-			}
+				}
+				//parse 6 month data
+				if(flag == 1){
+					
+				month6Prices.addElement(monthPricesString);	
+				month6Dates.addElement(monthDatesString);
+				System.out.println("dataset 6 months: "+ monthPricesString);
+				}
+				//parse year data
+				if(flag == 2){
+					yearPrices.addElement(monthPricesString);
+					yearDates.addElement(monthDatesString);
+					System.out.println("dataset 1 year: "+ monthPricesString);
+					
+				}
+				
 			
 		}
-		//parse 6 month data
-		if(flag == 1){
-			
-		}
-		//parse year data
-		if(flag == 2){
-			
-		}
+
 	}
 
 	// parse the array that comes back from flag 1
@@ -453,8 +529,6 @@ public class StockSearchPanel extends JPanel {
 		for (int i = 0; i < closedPrices.size(); i++) {
 			// parse dates to accurately fit prices
 			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(priceDates.get(i));
-			// String daysStr = new SimpleDateFormat("MM.dd").format(date1);
-			// System.out.println("day: " + daysStr);
 
 			series.add(new Day(date1), Double.parseDouble(closedPrices.elementAt(i)));
 		} // first input param is x axis, 2nds is y axis

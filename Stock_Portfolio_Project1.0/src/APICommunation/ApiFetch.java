@@ -16,8 +16,8 @@ public class ApiFetch {
                   URLConnection connection = request.openConnection();
                   
                   //timeout if connection is stuck
-                  connection.setConnectTimeout(1000);
-                  connection.setReadTimeout(1000);
+//                  connection.setConnectTimeout(1000);
+//                  connection.setReadTimeout(1000);
  
                   InputStreamReader inputStream = new InputStreamReader(connection.getInputStream(), "UTF-8");
                   BufferedReader bufferedReader = new BufferedReader(inputStream);
