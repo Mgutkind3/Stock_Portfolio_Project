@@ -18,7 +18,7 @@ public class MainFrame {
 	// objects for referencing java ui panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
-	private static DataPanel dPanel = new DataPanel();
+	private static NewsPanel dPanel = new NewsPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
@@ -72,7 +72,7 @@ public class MainFrame {
 		// add tabs to the tab panel
 		tp.addTab("Summary", summaryScroll);
 		tp.addTab("Your Stocks", yourStocksScroll);
-		tp.addTab("Data", dataScroll);
+		tp.addTab("News", dataScroll);
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("Help", helpScoll);
 
