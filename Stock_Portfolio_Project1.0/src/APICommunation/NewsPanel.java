@@ -27,6 +27,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -45,6 +46,8 @@ public class NewsPanel extends JPanel {
 	private Vector headlines = new Vector();
 	private Vector urlSources = new Vector();
     private JPanel graphPanel = new JPanel();
+    private Vector companyNames = new Vector();
+    private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 
    StockSearchPanel stockSearchPan = new StockSearchPanel();
 
@@ -56,8 +59,19 @@ public class NewsPanel extends JPanel {
 //       Random rand = new Random();
 //       int  n = rand.nextInt(50) + 1;
        
+       
+       
        //get the values from stock search page
-       headlines = stockSearchPan.getHeadlines();
+      buildPage();
+     
+       
+
+   }
+//   public void stateChanged(ChangeEvent e){
+//	   stockSearchPane.getSource();
+//   }
+   public void buildPage(){
+	   headlines = stockSearchPan.getHeadlines();
        urlSources = stockSearchPan.getURLSource();
 
     	   
@@ -100,8 +114,6 @@ public class NewsPanel extends JPanel {
 			 }
 
        this.add(NewsDisplays);
-       
-
    }
    
    

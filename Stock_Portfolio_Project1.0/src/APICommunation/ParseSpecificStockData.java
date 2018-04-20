@@ -1,5 +1,7 @@
 package APICommunation;
 
+import java.util.Vector;
+
 public class ParseSpecificStockData {
 
 	private String companyName;
@@ -12,6 +14,7 @@ public class ParseSpecificStockData {
 	private String peRatio;
 	private String week52High;
 	private String week52Low;
+	
 
 	public String getCompanyName() {
 		return companyName;
@@ -92,4 +95,5 @@ public class ParseSpecificStockData {
 	public void setWeek52Low(String week52Low) {
 		this.week52Low = week52Low;
 	}
+
 }

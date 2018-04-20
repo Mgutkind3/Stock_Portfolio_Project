@@ -72,8 +72,8 @@ public class MainFrame {
 		// add tabs to the tab panel
 		tp.addTab("Summary", summaryScroll);
 		tp.addTab("Your Stocks", yourStocksScroll);
-		tp.addTab("News", dataScroll);
 		tp.addTab("Stock Search", stockSearchScroll);
+		tp.addTab("News", dataScroll);
 		tp.addTab("Help", helpScoll);
 
 		// set essential rules for using the jframe
