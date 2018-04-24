@@ -195,13 +195,13 @@ public class StockSearchPanel extends JPanel {
 			}
 		});
 		
-		// Adds to the Favoites on the SummaryPanel
-		addFavoite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// add to favites list
-				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()));
-			}
-		});
+		// Adds to the Favorites on the SummaryPanel
+				addFavoite.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// add to favorites list
+						SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()), specificStockFields.getChangePercent());
+					}
+				});
 
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -611,4 +611,15 @@ public class StockSearchPanel extends JPanel {
 		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
 	}
 
+	public Vector<String> getHeadlines(){
+		return this.headlines;
+	}
+	
+	public Vector<String> getUrlSources(){
+		return this.urlSources;
+	}
+	
+	
+	
+	
 }// end of class

@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.*;
 
 public class MainFrame {
@@ -18,7 +20,7 @@ public class MainFrame {
 	// objects for referencing java ui panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
-	private static DataPanel dPanel = new DataPanel();
+	private static NewsPanel dPanel = new NewsPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
@@ -59,8 +61,7 @@ public class MainFrame {
 
 		// initialize frame for UI
 
-
-		frame.setSize(850, 750);
+		frame.setSize(1000, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page
@@ -73,15 +74,9 @@ public class MainFrame {
 		// add tabs to the tab panel
 		tp.addTab("Summary", summaryScroll);
 		tp.addTab("Your Stocks", yourStocksScroll);
-		tp.addTab("Data", dataScroll);
+		tp.addTab("News", dataScroll);
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("Help", helpScoll);
-		
-		tp.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-			   sumPanel.refresh();
-	        }
-	   	});
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
@@ -89,6 +84,21 @@ public class MainFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(400, 200));
 
+		
+		//react to selected tabs
+		tp.addChangeListener(new ChangeListener() {
+	        public void stateChanged(ChangeEvent e) {
+	            if(tp.getSelectedIndex() == 3){
+	            	//refresh news page
+	            	dPanel.buildPage();
+	            	dPanel.revalidate();
+	            	dPanel.repaint();
+	            }
+	        }
+	    });
+		
+		
+		
 		// the enter button on login screen
 		enter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

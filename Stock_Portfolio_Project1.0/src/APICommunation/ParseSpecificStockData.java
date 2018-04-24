@@ -1,5 +1,4 @@
 package csi480;
-
 public class ParseSpecificStockData {
 
 	private String companyName;
@@ -12,6 +11,7 @@ public class ParseSpecificStockData {
 	private String peRatio;
 	private String week52High;
 	private String week52Low;
+	private String changePercent;
 
 	public String getCompanyName() {
 		return companyName;
@@ -91,5 +91,13 @@ public class ParseSpecificStockData {
 
 	public void setWeek52Low(String week52Low) {
 		this.week52Low = week52Low;
+	}
+
+	public String getChangePercent() {
+		return changePercent;
+	}
+
+	public void setChangePercent(String changePercent) {
+		this.changePercent = changePercent;
 	}
 }
