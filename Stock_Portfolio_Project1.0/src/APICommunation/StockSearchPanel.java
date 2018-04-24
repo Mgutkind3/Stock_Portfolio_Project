@@ -1,7 +1,7 @@
 package csi480;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.json.JSONArray;
@@ -53,8 +52,11 @@ public class StockSearchPanel extends JPanel {
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
 	private String testSymbol;
+	private boolean noDataError;
+	final private JLabel errorMessage = new JLabel("No data from API");
 
 	public StockSearchPanel() {
+		this.noDataError=false;
 		this.setLayout(new BorderLayout());
 		this.setBorder(MainFrame.createTitle("Search Stocks"));
 		this.cp.setyAxsis("Dollars");
@@ -250,7 +252,14 @@ public class StockSearchPanel extends JPanel {
 		buttonPanel.add(monthButton);
 		buttonPanel.add(halfYearButton);
 		buttonPanel.add(yearButton);
-		graphPanel.add(buttonPanel, BorderLayout.SOUTH);
+		
+		errorMessage.setForeground(Color.RED);
+		JPanel helperPanel = new JPanel();
+		helperPanel.setLayout(new BorderLayout());
+		helperPanel.add(buttonPanel, BorderLayout.CENTER);
+		helperPanel.add(errorMessage,BorderLayout.NORTH);
+		
+		graphPanel.add(helperPanel, BorderLayout.SOUTH);
 
 		// add panels to main menu border layout
 		this.add(searchBarGrid, BorderLayout.LINE_START);
@@ -268,13 +277,31 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
+		addToGraphPanel();
+
+	}
+	private void updateChart() {
+		cp.removeAll();
+		try {
+			createChart(testSymbol);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		addToGraphPanel();
 
 	}
 
+	private void updateChartHalfYear() {
+		cp.removeAll();
+		try {
+			createChartHalfYear(testSymbol);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		addToGraphPanel();
+
+	}
+	
 	private void createChartYear(String symbol) throws ParseException {
 		// pass symbol name
 		TimeSeries series = new TimeSeries(symbol);
@@ -290,34 +317,15 @@ public class StockSearchPanel extends JPanel {
 
 	}
 
-	private void updateChart() {
-		cp.removeAll();
-		try {
-			createChart(testSymbol);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+
+
+	private void addToGraphPanel(){
 		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();
-
 	}
-
-	private void updateChartHalfYear() {
-		cp.removeAll();
-		try {
-			createChartHalfYear(testSymbol);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
-
-	}
-
+	
 	private void createChartHalfYear(String symbol) throws ParseException {
 		TimeSeries series = new TimeSeries(symbol);
 		for (int i = 0; i < month6Prices.size(); i++) {
@@ -329,6 +337,13 @@ public class StockSearchPanel extends JPanel {
 	}
 
 	private void addSeriesToChart(TimeSeries series, String symbol) {
+		if(series.isEmpty()){
+			errorMessage.setVisible(true);
+		}
+		else{
+			errorMessage.setVisible(false);
+		}
+		
 		// Add the series to your data set
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		dataset.addSeries(series);
