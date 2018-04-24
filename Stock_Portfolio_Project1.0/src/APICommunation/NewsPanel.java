@@ -55,8 +55,6 @@ public class NewsPanel extends JPanel {
    public NewsPanel() {
 
        this.setBorder(MainFrame.createTitle("News"));
-       System.out.println("news panel run");
-
     	   
    }
    

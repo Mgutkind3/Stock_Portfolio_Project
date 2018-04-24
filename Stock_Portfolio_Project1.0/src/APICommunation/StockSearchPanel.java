@@ -70,16 +70,26 @@ public class StockSearchPanel extends JPanel {
 		searchBarSymb.setEditable(false);
 		searchBarSymb.setPrototypeDisplayValue("Search Box");
 
+		// JButton
+		JButton submitButton = new JButton("Submit");
+		JButton addButton = new JButton("Add to graph");
+		JButton addFavoite = new JButton("Add to favorites");
+		JButton monthButton = new JButton("Month");
+		JButton halfYearButton = new JButton("6 Months");
+		JButton yearButton = new JButton("Year");
+		
 		// add action listeners to correlate boxes with each other (Match below)
 		searchBarNames.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				searchBarSymb.setSelectedIndex(searchBarNames.getSelectedIndex());
+				addFavoite.setEnabled(false);
 			}
 		});
 		// add action listeners to correlate boxes with each other (Match above)
 		searchBarSymb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				searchBarNames.setSelectedIndex(searchBarSymb.getSelectedIndex());
+				addFavoite.setEnabled(false);
 			}
 
 		});
@@ -88,13 +98,13 @@ public class StockSearchPanel extends JPanel {
 		JLabel titleInstructionsNames = new JLabel("Select or Type in a Stock Name/Symbol");
 		JLabel titleInstructionsSymb = new JLabel("Or");
 
-		// JButton
-		JButton submitButton = new JButton("Submit");
-		JButton addButton = new JButton("Add to graph");
-		JButton addFavoite = new JButton("Add to favorites");
-		JButton monthButton = new JButton("Month");
-		JButton halfYearButton = new JButton("6 Months");
-		JButton yearButton = new JButton("Year");
+//		// JButton
+//		JButton submitButton = new JButton("Submit");
+//		JButton addButton = new JButton("Add to graph");
+//		JButton addFavoite = new JButton("Add to favorites");
+//		JButton monthButton = new JButton("Month");
+//		JButton halfYearButton = new JButton("6 Months");
+//		JButton yearButton = new JButton("Year");
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
@@ -107,7 +117,6 @@ public class StockSearchPanel extends JPanel {
 		searchBarGrid.add(submitButton);
 		searchBarGrid.add(addButton);
 		searchBarGrid.add(addFavoite);
-		// searchBarGrid.setPreferredSize(new Dimension(250, 500));
 
 		// JPanel for data results (middle panel)
 		JPanel dataResultsGrid = new JPanel();
@@ -197,7 +206,7 @@ public class StockSearchPanel extends JPanel {
 		addFavoite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// add to favites list
-				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()));
+				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()), specificStockFields.getChangePercent());
 			}
 		});
 
@@ -257,6 +266,9 @@ public class StockSearchPanel extends JPanel {
 				priceDates.clear();
 				headlines.clear();
 				urlSources.clear();
+				
+				//reactivate add to favorites
+				addFavoite.setEnabled(true);
 
 				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
 				testSymbol = symbolSelected;
@@ -565,13 +577,17 @@ public class StockSearchPanel extends JPanel {
 		for (int i = 0; i < chart.length(); i++) {
 			String closeP = chart.getJSONObject(i).getString("close");
 			String date = chart.getJSONObject(i).getString("date");
-			// System.out.println("date:" + date);
+			String changePercent = chart.getJSONObject(i).getString("changePercent");
+			//System.out.println("change %: " + changePercent);
 
 			// create list of closed prices for the last 20 days
 			closedPrices.add(closeP);
 			priceDates.add(date);
+			specificStockFields.setChangePercent(changePercent);
 			// System.out.println(closeP);
 		}
+
+		
 
 	}
 
