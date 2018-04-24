@@ -2,6 +2,7 @@ package APICommunation;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Vector;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -11,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.*;
 
 public class MainFrame {
@@ -18,8 +21,8 @@ public class MainFrame {
 	// objects for referencing java ui panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
-	private static NewsPanel dPanel = new NewsPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
+	private static NewsPanel dPanel = new NewsPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
 	private static JFrame frame = new JFrame("Stock Ticker");
@@ -65,8 +68,8 @@ public class MainFrame {
 		// create scroll panes for every page
 		JScrollPane summaryScroll = new JScrollPane(sumPanel);
 		JScrollPane yourStocksScroll = new JScrollPane(yourSPanel);
-		JScrollPane dataScroll = new JScrollPane(dPanel);
 		JScrollPane stockSearchScroll = new JScrollPane(sSearchPanel);
+		JScrollPane dataScroll = new JScrollPane(dPanel);
 		JScrollPane helpScoll = new JScrollPane(hPanel);
 
 		// add tabs to the tab panel
@@ -75,12 +78,26 @@ public class MainFrame {
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("News", dataScroll);
 		tp.addTab("Help", helpScoll);
+		
+		
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(400, 200));
+		
+		//react to selected tabs
+		tp.addChangeListener(new ChangeListener() {
+	        public void stateChanged(ChangeEvent e) {
+	            if(tp.getSelectedIndex() == 3){
+	            	System.out.println("refresh");
+	            	dPanel.buildPage();
+	            	dPanel.revalidate();
+	            	dPanel.repaint();
+	            }
+	        }
+	    });
 
 		// the enter button on login screen
 		enter.addActionListener(new ActionListener() {

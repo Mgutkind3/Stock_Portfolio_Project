@@ -43,41 +43,33 @@ import org.json.JSONObject;
 
 public class NewsPanel extends JPanel {
 
-	private Vector headlines = new Vector();
-	private Vector urlSources = new Vector();
+	private Vector<String> headlines = new Vector<String>();
+	private Vector<String> urlSources = new Vector<String>();
     private JPanel graphPanel = new JPanel();
-    private Vector companyNames = new Vector();
-    private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
-
+    private Vector<String> companyNames = new Vector<String>();
+    private JPanel NewsDisplays = new JPanel();
    StockSearchPanel stockSearchPan = new StockSearchPanel();
-
-
+ //   GetAPIParser apiParser = new GetAPIParser();
+   
+   
    public NewsPanel() {
 
        this.setBorder(MainFrame.createTitle("News"));
-       
-//       Random rand = new Random();
-//       int  n = rand.nextInt(50) + 1;
-       
-       
-       
-       //get the values from stock search page
-      buildPage();
-     
-       
-
-   }
-//   public void stateChanged(ChangeEvent e){
-//	   stockSearchPane.getSource();
-//   }
-   public void buildPage(){
-	   headlines = stockSearchPan.getHeadlines();
-       urlSources = stockSearchPan.getURLSource();
+       System.out.println("news panel run");
 
     	   
+   }
+   
+
+
+   public void buildPage(){
+    
+	   NewsDisplays.removeAll();
+	   headlines = stockSearchPan.getHeadlines();
+	   urlSources = stockSearchPan.getUrlSources();
+	   
        this.setLayout(new BorderLayout());
        this.graphPanel.setLayout(new BorderLayout());
-       JPanel NewsDisplays = new JPanel();
        NewsDisplays.setLayout(new GridLayout(20,1));
        
        JLabel newsLabel[] = new JLabel[headlines.size()];
@@ -85,7 +77,6 @@ public class NewsPanel extends JPanel {
        //add headlines and sources to news panel with hyperlink
        for(int i = 0; i < headlines.size(); i++){
     	   final int p = i;
-
     	   newsLabel[i] = new JLabel(headlines.elementAt(i).toString());
     	   
     	   //open up link with default browser
@@ -112,8 +103,10 @@ public class NewsPanel extends JPanel {
     	   
     	   NewsDisplays.add(newsLabel[i]);
 			 }
-
+       
        this.add(NewsDisplays);
+       this.revalidate();
+       this.repaint();
    }
    
    
