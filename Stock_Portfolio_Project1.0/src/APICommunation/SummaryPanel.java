@@ -36,8 +36,6 @@ public class SummaryPanel extends JPanel {
 tPane.setEditable(false);
 		
 		ArrayList<String> myStocks = new ArrayList<String>();
-//		favorites.add("fav1");
-//		favorites.add("fav2");
 		myStocks.add("stock1");
 		myStocks.add("stock2");
 		
@@ -148,7 +146,7 @@ tPane.setEditable(false);
 	}
 
 	//make sure no duplicate stocks can be added to the user's lists of favorites
-	public static void addFavoite(String s, String changePercent) {
+	public static void addFavorite(String s, String changePercent) {
 		if (!favorites.contains(s)) {
 			changePerc.add(changePercent);
 			favorites.add(s);

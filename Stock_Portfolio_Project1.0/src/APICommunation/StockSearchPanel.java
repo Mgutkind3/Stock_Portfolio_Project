@@ -1,5 +1,6 @@
 package APICommunation;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -51,8 +52,11 @@ public class StockSearchPanel extends JPanel {
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
 	private String testSymbol;
+	private boolean noDataError;
+    final private JLabel errorMessage = new JLabel("No data from API");
 
 	public StockSearchPanel() {
+		this.noDataError=false;
 		this.setLayout(new BorderLayout());
 		this.setBorder(MainFrame.createTitle("Search Stocks"));
 		this.cp.setyAxsis("Dollars");
@@ -73,7 +77,7 @@ public class StockSearchPanel extends JPanel {
 		// JButton
 		JButton submitButton = new JButton("Submit");
 		JButton addButton = new JButton("Add to graph");
-		JButton addFavoite = new JButton("Add to favorites");
+		JButton addFavorite = new JButton("Add to favorites");
 		JButton monthButton = new JButton("Month");
 		JButton halfYearButton = new JButton("6 Months");
 		JButton yearButton = new JButton("Year");
@@ -82,14 +86,14 @@ public class StockSearchPanel extends JPanel {
 		searchBarNames.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				searchBarSymb.setSelectedIndex(searchBarNames.getSelectedIndex());
-				addFavoite.setEnabled(false);
+				addFavorite.setEnabled(false);
 			}
 		});
 		// add action listeners to correlate boxes with each other (Match above)
 		searchBarSymb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				searchBarNames.setSelectedIndex(searchBarSymb.getSelectedIndex());
-				addFavoite.setEnabled(false);
+				addFavorite.setEnabled(false);
 			}
 
 		});
@@ -108,7 +112,7 @@ public class StockSearchPanel extends JPanel {
 		searchBarGrid.add(searchBarSymb);
 		searchBarGrid.add(submitButton);
 		searchBarGrid.add(addButton);
-		searchBarGrid.add(addFavoite);
+		searchBarGrid.add(addFavorite);
 
 		// JPanel for data results (middle panel)
 		JPanel dataResultsGrid = new JPanel();
@@ -135,23 +139,6 @@ public class StockSearchPanel extends JPanel {
 		monthButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				submitButton.doClick();
-				/*
-				 * // clear lists monthPrices.clear(); monthDates.clear();
-				 * 
-				 * String currentCompany =
-				 * symbols.elementAt(searchBarNames.getSelectedIndex()); String
-				 * monthCall = "https://www.quandl.com/api/v3/datasets/WIKI/" +
-				 * currentCompany + ".json?column_index=4&start_date=" +
-				 * lastMonthString + "&end_date=" + todayDate +
-				 * "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
-				 * getAPIStocks(monthCall, 2, null, 0);
-				 * 
-				 * String symbolSelected =
-				 * symbols.elementAt(searchBarNames.getSelectedIndex());
-				 * testSymbol = symbolSelected;
-				 * 
-				 * updateChart(); revalidate(); repaint();
-				 */
 			}
 		});
 
@@ -194,11 +181,12 @@ public class StockSearchPanel extends JPanel {
 			}
 		});
 		
-		// Adds to the Favoites on the SummaryPanel
-		addFavoite.addActionListener(new ActionListener() {
+		// Adds to the Favorites on the SummaryPanel
+		addFavorite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// add to favites list
-				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()), specificStockFields.getChangePercent());
+				// add to favorites list
+				SummaryPanel.addFavorite(symbols.elementAt(searchBarNames.getSelectedIndex()),
+						specificStockFields.getChangePercent());
 			}
 		});
 
@@ -251,49 +239,12 @@ public class StockSearchPanel extends JPanel {
 		submitButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+
 				// remove current stocks data
-				dataResultsGrid.removeAll();
+
 				cp.removeAllDataset();
-				closedPrices.clear();
-				priceDates.clear();
-				headlines.clear();
-				urlSources.clear();
-				
-				//reactivate add to favorites
-				addFavoite.setEnabled(true);
-
-				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
-				testSymbol = symbolSelected;
-				// use latest price field for the latest price (never null)
-				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
-						symbolSelected, 5);
-
-				// JLabel's for the specific stock data and fields
-				JLabel data = new JLabel(specificStockFields.getCompanyName());
-				JLabel latestPrice = new JLabel("Price: $" + specificStockFields.getLatestPrice());
-				JLabel sector = new JLabel("Sector: " + specificStockFields.getSector());
-				JLabel openPrice = new JLabel("Open Price: $" + specificStockFields.getOpenPrice());
-				JLabel closePrice = new JLabel("Close Price: $" + specificStockFields.getClosePrice());
-				JLabel highPrice = new JLabel("High Price: $" + specificStockFields.getHighPrice());
-				JLabel lowPrice = new JLabel("Low Price: $" + specificStockFields.getLowPrice());
-				JLabel peRatio = new JLabel("Per Earnings Ratio: $" + specificStockFields.getPeRatio());
-				JLabel week52High = new JLabel("Week 52 High: $" + specificStockFields.getWeek52High());
-				JLabel week52Low = new JLabel("Week 52 Low: $" + specificStockFields.getWeek52Low());
-				// add JLabel fields to the UI screen
-				dataResultsGrid.add(data);
-				dataResultsGrid.add(latestPrice);
-				dataResultsGrid.add(sector);
-				dataResultsGrid.add(openPrice);
-				dataResultsGrid.add(closePrice);
-				dataResultsGrid.add(highPrice);
-				dataResultsGrid.add(lowPrice);
-				dataResultsGrid.add(peRatio);
-				dataResultsGrid.add(week52High);
-				dataResultsGrid.add(week52Low);
-
-				updateChart();
-				revalidate();
-				repaint();
+				addButton.doClick();
+				addFavorite.setEnabled(true);
 			}
 		});
 
@@ -305,8 +256,16 @@ public class StockSearchPanel extends JPanel {
 		buttonPanel.add(monthButton);
 		buttonPanel.add(halfYearButton);
 		buttonPanel.add(yearButton);
-		graphPanel.add(buttonPanel, BorderLayout.SOUTH);
-
+		
+		
+        errorMessage.setForeground(Color.RED);
+        JPanel helperPanel = new JPanel();
+        helperPanel.setLayout(new BorderLayout());
+        helperPanel.add(buttonPanel, BorderLayout.CENTER);
+        helperPanel.add(errorMessage,BorderLayout.NORTH);
+        
+        graphPanel.add(helperPanel, BorderLayout.SOUTH);
+        
 		// add panels to main menu border layout
 		this.add(searchBarGrid, BorderLayout.LINE_START);
 		this.add(dataResultsGrid, BorderLayout.LINE_END);
@@ -323,29 +282,7 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
-		
-	}
-
-	private void createChartYear(String symbol) throws ParseException{
-		// pass symbol name
-		TimeSeries series = new TimeSeries(symbol);
-
-		// adds data to series to be used in chart
-		for (int i = 0; i < yearPrices.size(); i++) {
-			// parse dates to accurately fit prices
-			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(yearDates.get(i));
-			series.addOrUpdate(new Day(date1), Double.parseDouble(yearPrices.elementAt(i)));
-		} // first input param is x axis, 2nds is y axis
-
-		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
+		addToGraphPanel();
 		
 	}
 
@@ -356,10 +293,7 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
+		addToGraphPanel();
 
 	}
 
@@ -370,13 +304,33 @@ public class StockSearchPanel extends JPanel {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
+		addToGraphPanel();
 
 	}
+	
+	private void createChartYear(String symbol) throws ParseException {
+        // pass symbol name
+        TimeSeries series = new TimeSeries(symbol);
+ 
+        // adds data to series to be used in chart
+        for (int i = 0; i < yearPrices.size(); i++) {
+            // parse dates to accurately fit prices
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(yearDates.get(i));
+            series.addOrUpdate(new Day(date1), Double.parseDouble(yearPrices.elementAt(i)));
+        } // first input param is x axis, 2nds is y axis
+ 
+        addSeriesToChart(series, symbol);
+ 
+    }
 
+	  private void addToGraphPanel(){
+	        graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
+	        graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+	        revalidate();
+	        repaint();
+	 
+	    }
+	  
 	private void createChartHalfYear(String symbol) throws ParseException {
 		// pass symbol name
 		TimeSeries series = new TimeSeries(symbol);
@@ -390,19 +344,32 @@ public class StockSearchPanel extends JPanel {
 		} // first input param is x axis, 2nds is y axis
 
 		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
-	}
+		addSeriesToChart(series, symbol);
+    }
+ 
+    private void addSeriesToChart(TimeSeries series, String symbol) {
+        if(series.isEmpty()){
+            errorMessage.setVisible(true);
+        }
+        else{
+            errorMessage.setVisible(false);
+        }
 
-	private void redrawChart() {
-		cp.removeAll();
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
-	}
+        // Add the series to your data set
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(series);
+        this.cp.addDataset(dataset);
+        this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
+    }
+ 
+    private void redrawChart() {
+        cp.removeAll();
+        graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
+        graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+        revalidate();
+        repaint();
+    }
+    
 
 	// get json from url and parse it in "parseAllStockjson"
 	public void getAPIStocks(String urlString, int flag, String symbol, int timeseriesFlag) {
@@ -599,10 +566,7 @@ public class StockSearchPanel extends JPanel {
 		} // first input param is x axis, 2nds is y axis
 
 		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
+		addSeriesToChart(series, symbol);
 	}
 	
 	public Vector<String> getHeadlines(){
