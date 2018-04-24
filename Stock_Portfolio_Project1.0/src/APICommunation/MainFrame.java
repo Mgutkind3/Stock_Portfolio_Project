@@ -90,6 +90,7 @@ public class MainFrame {
 		//react to selected tabs
 		tp.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
+	        	sumPanel.refresh();
 	            if(tp.getSelectedIndex() == 3){
 	            	//refresh news page
 	            	dPanel.buildPage();

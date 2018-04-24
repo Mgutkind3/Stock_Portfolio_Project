@@ -75,14 +75,12 @@ tPane.setEditable(false);
 		stockText.setEditable(false);
 		JLabel sumLabel = new JLabel("Highest Increases/Decreases");
 
-		JButton refreshBtn = new JButton("Refresh");
 	
 		add(favLabel);
 		add(favText);
 		add(sumLabel);
 		add(stockText);
 		add(logOutPanel);
-		add(refreshBtn);
 		add(favPanel);
 
 		// logout button
@@ -92,16 +90,9 @@ tPane.setEditable(false);
 
 			}
 		});
-
-		refreshBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
 	}
 
-	private void refresh() {
-		
+	public void refresh() {
 		
 		StyledDocument doc = tPane.getStyledDocument();
         Style style = tPane.addStyle("I'm a Style", null);
