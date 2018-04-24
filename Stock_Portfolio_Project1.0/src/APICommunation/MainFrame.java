@@ -76,6 +76,12 @@ public class MainFrame {
 		tp.addTab("Data", dataScroll);
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("Help", helpScoll);
+		
+		tp.addChangeListener(new ChangeListener() {
+	        public void stateChanged(ChangeEvent e) {
+			   sumPanel.refresh();
+	        }
+	   	});
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
