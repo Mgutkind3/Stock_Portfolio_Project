@@ -132,27 +132,10 @@ public class StockSearchPanel extends JPanel {
 		String todayDate = dtf.format(now).toString();
 
 		// create 1 month calculation for api call
-		String lastMonthString = getMonthBefore();
 		monthButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				submitButton.doClick();
-				/*
-				 * // clear lists monthPrices.clear(); monthDates.clear();
-				 * 
-				 * String currentCompany =
-				 * symbols.elementAt(searchBarNames.getSelectedIndex()); String
-				 * monthCall = "https://www.quandl.com/api/v3/datasets/WIKI/" +
-				 * currentCompany + ".json?column_index=4&start_date=" +
-				 * lastMonthString + "&end_date=" + todayDate +
-				 * "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
-				 * getAPIStocks(monthCall, 2, null, 0);
-				 * 
-				 * String symbolSelected =
-				 * symbols.elementAt(searchBarNames.getSelectedIndex());
-				 * testSymbol = symbolSelected;
-				 * 
-				 * updateChart(); revalidate(); repaint();
-				 */
+
 			}
 		});
 
@@ -177,31 +160,32 @@ public class StockSearchPanel extends JPanel {
 		});
 
 		String lastYearString = getYearBefore();
-		yearButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
+		yearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				cp.removeAllDataset();
 				yearDates.clear();
 				yearPrices.clear();
-				
+
 				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
 				String yearCall = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany
 						+ ".json?column_index=4&start_date=" + lastYearString + "&end_date=" + todayDate
 						+ "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
 				getAPIStocks(yearCall, 2, null, 2);
-				
+
 				updateChartYear();
 				revalidate();
 				repaint();
 			}
 		});
-		
+
 		// Adds to the Favorites on the SummaryPanel
-				addFavoite.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// add to favorites list
-						SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()), specificStockFields.getChangePercent());
-					}
-				});
+		addFavoite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// add to favorites list
+				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()),
+						specificStockFields.getChangePercent());
+			}
+		});
 
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -253,58 +237,8 @@ public class StockSearchPanel extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				// remove current stocks data
-				dataResultsGrid.removeAll();
 				cp.removeAllDataset();
-				closedPrices.clear();
-				priceDates.clear();
-				headlines.clear();
-				urlSources.clear();
-
-				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
-				testSymbol = symbolSelected;
-				// use latest price field for the latest price (never null)
-				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
-						symbolSelected, 5);
-
-				// JLabel's for the specific stock data and fields
-				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
-				JLabel latestPrice = new JLabel("           Price: $" + specificStockFields.getLatestPrice());
-				JLabel sector = new JLabel("           Sector: " + specificStockFields.getSector());
-				JLabel openPrice = new JLabel("           Open Price: $" + specificStockFields.getOpenPrice());
-				JLabel closePrice = new JLabel("           Close Price: $" + specificStockFields.getClosePrice());
-				JLabel highPrice = new JLabel("           High Price: $" + specificStockFields.getHighPrice());
-				JLabel lowPrice = new JLabel("           Low Price: $" + specificStockFields.getLowPrice());
-				JLabel peRatio = new JLabel("           Per Earnings Ratio: $" + specificStockFields.getPeRatio());
-				JLabel week52High = new JLabel("           Week 52 High: $" + specificStockFields.getWeek52High());
-				JLabel week52Low = new JLabel("           Week 52 Low: $" + specificStockFields.getWeek52Low());
-				// add JLabel fields to the UI screen
-				dataResultsGrid.add(data);
-				dataResultsGrid.add(latestPrice);
-				dataResultsGrid.add(sector);
-				dataResultsGrid.add(openPrice);
-				dataResultsGrid.add(closePrice);
-				dataResultsGrid.add(highPrice);
-				dataResultsGrid.add(lowPrice);
-				dataResultsGrid.add(peRatio);
-				dataResultsGrid.add(week52High);
-				dataResultsGrid.add(week52Low);
-
-				// create two open columns between data
-				// for(int i = 0; i < 4; i++){
-				// searchBarGrid.add(new JLabel(" "));
-				// }
-
-				// searchBarGrid.add(new JLabel("NEWS"));
-				// make this jlabel a hyperlink for the source
-				// JLabel for popular news about the stock
-				// for(int i = 0; i < headlines.size(); i++){
-				// chartPanel.add(new JLabel(headlines.elementAt(i)));
-				// }
-				// + ", Source: " + urlSources.elementAt(i)));
-				// fix bug where a null input will crash the program
-				updateChart();
-				revalidate();
-				repaint();
+				addButton.doClick();
 			}
 		});
 
@@ -338,10 +272,10 @@ public class StockSearchPanel extends JPanel {
 		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 		revalidate();
 		repaint();
-		
+
 	}
 
-	private void createChartYear(String symbol) throws ParseException{
+	private void createChartYear(String symbol) throws ParseException {
 		// pass symbol name
 		TimeSeries series = new TimeSeries(symbol);
 
@@ -352,12 +286,8 @@ public class StockSearchPanel extends JPanel {
 			series.addOrUpdate(new Day(date1), Double.parseDouble(yearPrices.elementAt(i)));
 		} // first input param is x axis, 2nds is y axis
 
-		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
-		
+		addSeriesToChart(series, symbol);
+
 	}
 
 	private void updateChart() {
@@ -389,17 +319,16 @@ public class StockSearchPanel extends JPanel {
 	}
 
 	private void createChartHalfYear(String symbol) throws ParseException {
-		// pass symbol name
 		TimeSeries series = new TimeSeries(symbol);
-
-		// adds data to series to be used in chart
 		for (int i = 0; i < month6Prices.size(); i++) {
 			// parse dates to accurately fit prices
 			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(month6Dates.get(i));
-			// TODO make it month
 			series.addOrUpdate(new Day(date1), Double.parseDouble(month6Prices.elementAt(i)));
-		} // first input param is x axis, 2nds is y axis
+		}
+		addSeriesToChart(series, symbol);
+	}
 
+	private void addSeriesToChart(TimeSeries series, String symbol) {
 		// Add the series to your data set
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		dataset.addSeries(series);
@@ -439,18 +368,6 @@ public class StockSearchPanel extends JPanel {
 			e.printStackTrace();
 		}
 
-	}
-
-	// function to get the day a month ago from today
-	private String getMonthBefore() {
-		Date date = new Date();
-		long DAY_IN_MS = 1000 * 60 * 60 * 24;
-		new Date(System.currentTimeMillis() - (30 * DAY_IN_MS));
-
-		Date lastMonth = new Date(date.getTime() - (30 * DAY_IN_MS));
-		String lastMonthString = lastMonth.getYear() + 1900 + "-" + (lastMonth.getMonth() + 1) + "-"
-				+ lastMonth.getDate();
-		return lastMonthString;
 	}
 
 	// get 6 months ago from today
@@ -604,22 +521,15 @@ public class StockSearchPanel extends JPanel {
 			series.add(new Day(date1), Double.parseDouble(closedPrices.elementAt(i)));
 		} // first input param is x axis, 2nds is y axis
 
-		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
+		addSeriesToChart(series, symbol);
 	}
 
-	public Vector<String> getHeadlines(){
+	public Vector<String> getHeadlines() {
 		return this.headlines;
 	}
-	
-	public Vector<String> getUrlSources(){
+
+	public Vector<String> getUrlSources() {
 		return this.urlSources;
 	}
-	
-	
-	
-	
+
 }// end of class
