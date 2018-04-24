@@ -17,7 +17,7 @@ import javax.swing.*;
 
 public class MainFrame {
 
-	// objects for referencing java ui panels
+	// objects for referencing java UI panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
 	private static NewsPanel dPanel = new NewsPanel();
@@ -61,7 +61,7 @@ public class MainFrame {
 
 		// initialize frame for UI
 
-		frame.setSize(1000, 750);
+		frame.setSize(1200, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page
