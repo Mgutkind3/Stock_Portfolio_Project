@@ -218,16 +218,16 @@ public class StockSearchPanel extends JPanel {
 						symbolSelected, 5);
 
 				// JLabel's for the specific stock data and fields
-				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
-				JLabel latestPrice = new JLabel("           Price: $" + specificStockFields.getLatestPrice());
-				JLabel sector = new JLabel("           Sector: " + specificStockFields.getSector());
-				JLabel openPrice = new JLabel("           Open Price: $" + specificStockFields.getOpenPrice());
-				JLabel closePrice = new JLabel("           Close Price: $" + specificStockFields.getClosePrice());
-				JLabel highPrice = new JLabel("           High Price: $" + specificStockFields.getHighPrice());
-				JLabel lowPrice = new JLabel("           Low Price: $" + specificStockFields.getLowPrice());
-				JLabel peRatio = new JLabel("           Per Earnings Ratio: $" + specificStockFields.getPeRatio());
-				JLabel week52High = new JLabel("           Week 52 High: $" + specificStockFields.getWeek52High());
-				JLabel week52Low = new JLabel("           Week 52 Low: $" + specificStockFields.getWeek52Low());
+				JLabel data = new JLabel(specificStockFields.getCompanyName());
+				JLabel latestPrice = new JLabel("Price: $" + specificStockFields.getLatestPrice());
+				JLabel sector = new JLabel("Sector: " + specificStockFields.getSector());
+				JLabel openPrice = new JLabel("Open Price: $" + specificStockFields.getOpenPrice());
+				JLabel closePrice = new JLabel("Close Price: $" + specificStockFields.getClosePrice());
+				JLabel highPrice = new JLabel("High Price: $" + specificStockFields.getHighPrice());
+				JLabel lowPrice = new JLabel("Low Price: $" + specificStockFields.getLowPrice());
+				JLabel peRatio = new JLabel("Per Earnings Ratio: $" + specificStockFields.getPeRatio());
+				JLabel week52High = new JLabel("Week 52 High: $" + specificStockFields.getWeek52High());
+				JLabel week52Low = new JLabel("Week 52 Low: $" + specificStockFields.getWeek52Low());
 				// add JLabel fields to the UI screen
 				dataResultsGrid.add(data);
 				dataResultsGrid.add(latestPrice);
@@ -265,16 +265,16 @@ public class StockSearchPanel extends JPanel {
 						symbolSelected, 5);
 
 				// JLabel's for the specific stock data and fields
-				JLabel data = new JLabel("           " + specificStockFields.getCompanyName());
-				JLabel latestPrice = new JLabel("           Price: $" + specificStockFields.getLatestPrice());
-				JLabel sector = new JLabel("           Sector: " + specificStockFields.getSector());
-				JLabel openPrice = new JLabel("           Open Price: $" + specificStockFields.getOpenPrice());
-				JLabel closePrice = new JLabel("           Close Price: $" + specificStockFields.getClosePrice());
-				JLabel highPrice = new JLabel("           High Price: $" + specificStockFields.getHighPrice());
-				JLabel lowPrice = new JLabel("           Low Price: $" + specificStockFields.getLowPrice());
-				JLabel peRatio = new JLabel("           Per Earnings Ratio: $" + specificStockFields.getPeRatio());
-				JLabel week52High = new JLabel("           Week 52 High: $" + specificStockFields.getWeek52High());
-				JLabel week52Low = new JLabel("           Week 52 Low: $" + specificStockFields.getWeek52Low());
+				JLabel data = new JLabel(specificStockFields.getCompanyName());
+				JLabel latestPrice = new JLabel("Price: $" + specificStockFields.getLatestPrice());
+				JLabel sector = new JLabel("Sector: " + specificStockFields.getSector());
+				JLabel openPrice = new JLabel("Open Price: $" + specificStockFields.getOpenPrice());
+				JLabel closePrice = new JLabel("Close Price: $" + specificStockFields.getClosePrice());
+				JLabel highPrice = new JLabel("High Price: $" + specificStockFields.getHighPrice());
+				JLabel lowPrice = new JLabel("Low Price: $" + specificStockFields.getLowPrice());
+				JLabel peRatio = new JLabel("Per Earnings Ratio: $" + specificStockFields.getPeRatio());
+				JLabel week52High = new JLabel("Week 52 High: $" + specificStockFields.getWeek52High());
+				JLabel week52Low = new JLabel("Week 52 Low: $" + specificStockFields.getWeek52Low());
 				// add JLabel fields to the UI screen
 				dataResultsGrid.add(data);
 				dataResultsGrid.add(latestPrice);
@@ -287,19 +287,6 @@ public class StockSearchPanel extends JPanel {
 				dataResultsGrid.add(week52High);
 				dataResultsGrid.add(week52Low);
 
-				// create two open columns between data
-				// for(int i = 0; i < 4; i++){
-				// searchBarGrid.add(new JLabel(" "));
-				// }
-
-				// searchBarGrid.add(new JLabel("NEWS"));
-				// make this jlabel a hyperlink for the source
-				// JLabel for popular news about the stock
-				// for(int i = 0; i < headlines.size(); i++){
-				// chartPanel.add(new JLabel(headlines.elementAt(i)));
-				// }
-				// + ", Source: " + urlSources.elementAt(i)));
-				// fix bug where a null input will crash the program
 				updateChart();
 				revalidate();
 				repaint();

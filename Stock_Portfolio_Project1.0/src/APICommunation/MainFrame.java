@@ -91,7 +91,7 @@ public class MainFrame {
 		tp.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
 	            if(tp.getSelectedIndex() == 3){
-	            	System.out.println("refresh");
+	            	//refresh news page
 	            	dPanel.buildPage();
 	            	dPanel.revalidate();
 	            	dPanel.repaint();
