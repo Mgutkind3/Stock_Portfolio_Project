@@ -33,7 +33,8 @@ public class SummaryPanel extends JPanel {
 
 	public SummaryPanel() {
 
-
+tPane.setEditable(false);
+		
 		ArrayList<String> myStocks = new ArrayList<String>();
 //		favorites.add("fav1");
 //		favorites.add("fav2");
@@ -102,46 +103,51 @@ public class SummaryPanel extends JPanel {
 	}
 
 	private void refresh() {
-		favText.setText("");
+		
+		
+		StyledDocument doc = tPane.getStyledDocument();
+        Style style = tPane.addStyle("I'm a Style", null);
+        
+        //erase doc contents
+        try {
+			doc.remove(0, doc.getLength());
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        //loop through list of favorite stocks
 		for (int i = 0; i < favorites.size(); i++) {
-
+			
+			//get percent change value as a double
 			double number = Double.parseDouble(changePerc.get(i));
-			System.out.println("number: " + number);
+			
 			if(number > 0){
-				//favText.setText(favText.getText() + favorites.get(i) + " " + changePerc.get(i) + "\n");
-
-				StyledDocument doc = tPane.getStyledDocument();
-		        Style style = tPane.addStyle("I'm a Style", null);
-		        StyleConstants.setForeground(style, Color.GREEN);
 		        
 		        try { 	
-//		        	doc.getText(0, doc.getLength()) + 
-		        doc.remove(0, doc.getLength());
-		        doc.insertString(doc.getLength(), doc.getText(0, doc.getLength()) +favorites.get(i) + " " + changePerc.get(i) + "\n" ,style); }
-		        catch (BadLocationException e){}
-		        System.out.println("Positive");
+		        	StyleConstants.setForeground(style, Color.GREEN);
+		        	doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) +" Increase " +"\n" ,style); }
+		        	catch (BadLocationException e){}
+		        	//System.out.println("Positive");
 
 				//color code green
 			}else{
-				//favText.setText(favText.getText() + favorites.get(i) + " " + changePerc.get(i) + "\n");
-
-				StyledDocument doc = tPane.getStyledDocument();
-		        Style style = tPane.addStyle("I'm a Style", null);
-		        StyleConstants.setForeground(style, Color.RED);
 		        
-		        try {         	
-			        doc.remove(0, doc.getLength());
-			        doc.insertString(doc.getLength(), doc.getText(0, doc.getLength()) + favorites.get(i) + " " + changePerc.get(i) + "\n" ,style); }
+		        try {     
+			        StyleConstants.setForeground(style, Color.RED);
+			        doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) + " Decrease " + "\n" ,style); }
 			        catch (BadLocationException e){}
 
-		        System.out.println("negative");
+		        	//System.out.println("negative");
 				//color code red
 			}
 		}
+		
 		this.revalidate();
 		this.repaint();
 	}
 
+	//make sure no duplicate stocks can be added to the user's lists of favorites
 	public static void addFavoite(String s, String changePercent) {
 		if (!favorites.contains(s)) {
 			changePerc.add(changePercent);

@@ -98,14 +98,6 @@ public class StockSearchPanel extends JPanel {
 		JLabel titleInstructionsNames = new JLabel("Select or Type in a Stock Name/Symbol");
 		JLabel titleInstructionsSymb = new JLabel("Or");
 
-//		// JButton
-//		JButton submitButton = new JButton("Submit");
-//		JButton addButton = new JButton("Add to graph");
-//		JButton addFavoite = new JButton("Add to favorites");
-//		JButton monthButton = new JButton("Month");
-//		JButton halfYearButton = new JButton("6 Months");
-//		JButton yearButton = new JButton("Year");
-
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
 		searchBarGrid.setLayout(new GridLayout(25, 1));// make the columns
