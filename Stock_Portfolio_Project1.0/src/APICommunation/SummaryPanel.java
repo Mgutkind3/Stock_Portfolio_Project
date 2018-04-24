@@ -51,14 +51,12 @@ public class SummaryPanel extends JPanel {
 		stockText.setEditable(false);
 		JLabel sumLabel = new JLabel("Highest Increases/Decreases");
 
-		JButton refreshBtn = new JButton("Refresh");
 	
 		add(favLabel);
 		add(favText);
 		add(sumLabel);
 		add(stockText);
 		add(logOutPanel);
-		add(refreshBtn);
 
 		// logout button
 		logOut.addActionListener(new ActionListener() {
@@ -67,15 +65,9 @@ public class SummaryPanel extends JPanel {
 
 			}
 		});
-
-		refreshBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
 	}
 
-	private void refresh() {
+	public void refresh() {
 		favText.setText("");
 		for (int i = 0; i < favorites.size(); i++) {
 			favText.setText(favText.getText() + favorites.get(i) + "\n");
