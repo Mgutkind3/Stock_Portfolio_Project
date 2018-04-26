@@ -46,8 +46,6 @@ tPane.setEditable(false);
 		myStocks.add("stock1");
 		myStocks.add("stock2");
 		
-		//panel for favorites
-		JPanel favPanel = new JPanel();
 
 		// create logout button
 		JButton logOut = new JButton("Log out");
@@ -67,8 +65,6 @@ tPane.setEditable(false);
 		//get most active api call
 		getMostActive(baseUrl + "stock/market/list/mostactive");
 
-		favPanel.add(tPane);
-
 		JTextArea stockText = new JTextArea();
 
 		for (int i = 0; i < favorites.size(); i++) {
@@ -85,7 +81,6 @@ tPane.setEditable(false);
 		add(sumLabel);
 		add(stockText);
 		add(logOutPanel);
-		add(favPanel);
 
 		// logout button
 		logOut.addActionListener(new ActionListener() {
@@ -142,7 +137,6 @@ tPane.setEditable(false);
         try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         
