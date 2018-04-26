@@ -1,5 +1,4 @@
-package APICommunation;
- 
+package csi480;
 
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
@@ -12,6 +11,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.data.general.SeriesDataset;
 import org.jfree.data.time.TimeSeriesCollection;
 
 public class CPanel extends JPanel {
@@ -24,6 +24,7 @@ public class CPanel extends JPanel {
 	private int datasetIndex = 0;
 	private final int SIZE_CONSTANT = 50;
 	private ArrayList<TimeSeriesCollection> timeSeries = new ArrayList<TimeSeriesCollection>();
+	private ArrayList<String> symbolList = new ArrayList<String>();
 
 	public CPanel() {
 		xAxis = "Time";
@@ -38,11 +39,11 @@ public class CPanel extends JPanel {
 				true, // Use tooltips
 				false // Configure chart to generate URLs?
 		);
-		
+
 		this.timePlot = timeChart.getXYPlot();
 		timePlot.setDomainCrosshairVisible(true);
 		timePlot.setRangeCrosshairVisible(true);
-		
+
 		NumberAxis range = (NumberAxis) timePlot.getRangeAxis();
 		range.setAutoRange(true);
 		range.setAutoRangeIncludesZero(false);
@@ -104,6 +105,7 @@ public class CPanel extends JPanel {
 		}
 
 		this.datasetIndex = 0;
+		this.symbolList.clear();
 		refreshChart();
 	}
 
@@ -116,7 +118,17 @@ public class CPanel extends JPanel {
 		return this;
 	}
 
-	public void addDataset(TimeSeriesCollection dataset2) {
+	public ArrayList<String> getStockSymbols() {
+		ArrayList<String> seriesNames = new ArrayList<String>();
+		for (int i = 0; i < symbolList.size(); i++) {
+			seriesNames.add(symbolList.get(i));
+		}
+		return seriesNames;
+
+	};
+
+	public void addDataset(TimeSeriesCollection dataset2, String symbol) {
+		this.symbolList.add(symbol);
 		this.timePlot.setDataset(this.datasetIndex, dataset2);
 		this.timePlot.setRenderer(this.datasetIndex, new StandardXYItemRenderer());
 		this.datasetIndex++;
