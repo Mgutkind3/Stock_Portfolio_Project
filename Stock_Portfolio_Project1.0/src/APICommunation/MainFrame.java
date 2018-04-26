@@ -78,8 +78,6 @@ public class MainFrame {
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("News", dataScroll);
 		tp.addTab("Help", helpScoll);
-		
-		
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
@@ -91,6 +89,7 @@ public class MainFrame {
 		tp.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
 	        	sumPanel.refresh();
+	        	yourSPanel.refresh2();
 	            if(tp.getSelectedIndex() == 3){
 	            	//refresh news page
 	            	dPanel.buildPage();

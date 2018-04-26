@@ -23,19 +23,26 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 public class SummaryPanel extends JPanel {
-	private static ArrayList<String> favorites = new ArrayList<String>();
+	public static ArrayList<String> favorites = new ArrayList<String>();
 	private static ArrayList<String> changePerc = new ArrayList<String>();
+	public static ArrayList<String> myStocks = new ArrayList<String>();
 	private JTextArea favText = new JTextArea();
 	private JTextPane tPane = new JTextPane();
-
+	private String baseUrl = "https://api.iextrading.com/1.0/";
+	
 	public SummaryPanel() {
 
 tPane.setEditable(false);
-		
-		ArrayList<String> myStocks = new ArrayList<String>();
+//		favorites.add("stock 1");
+//		favorites.add("stock 2");
 		myStocks.add("stock1");
 		myStocks.add("stock2");
 		
@@ -54,19 +61,16 @@ tPane.setEditable(false);
 
 		GridLayout grid = new GridLayout(20, 2);
 		setLayout(grid);
-		
 
 		JLabel favLabel = new JLabel("Favorites");
+		
+		//get most active api call
+		getMostActive(baseUrl + "stock/market/list/mostactive");
 
 		favPanel.add(tPane);
 
-
 		JTextArea stockText = new JTextArea();
-//		for (int i = 0; i < favorites.size(); i++) {
-//			favText.setText(favText.getText() + favorites.get(i) + " " + changePerc.get(i) + "\n");
-//			 
-//			
-//		}
+
 		for (int i = 0; i < favorites.size(); i++) {
 			stockText.setText(stockText.getText() + myStocks.get(i) + "\n");
 		}
@@ -77,7 +81,7 @@ tPane.setEditable(false);
 
 	
 		add(favLabel);
-		add(favText);
+		add(tPane);
 		add(sumLabel);
 		add(stockText);
 		add(logOutPanel);
@@ -90,6 +94,43 @@ tPane.setEditable(false);
 
 			}
 		});
+	}
+	
+	//api call to get most active stocks
+	public void getMostActive(String urlString){
+		try {
+			URL url = new URL(urlString);
+			String jsonResult = ApiFetch.getJson(url.toString());
+			parseMostActive(jsonResult);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	//parse most active json
+	public void parseMostActive(String json){
+		try {
+
+			JSONArray arr = new JSONArray(json);
+
+			for (int i = 0; i < arr.length(); i++) {
+				String symbol = arr.getJSONObject(i).getString("symbol");
+				String change = arr.getJSONObject(i).getString("change");
+				// String combined = name + "-" + symbol;
+
+				// populate vectors with symbols and names
+				System.out.println("symbol: " + symbol);
+				System.out.println("change: " + change);
+//				symbols.add(symbol);
+//				companyNames.add(name);
+
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void refresh() {
@@ -112,10 +153,9 @@ tPane.setEditable(false);
 			double number = Double.parseDouble(changePerc.get(i));
 			
 			if(number > 0){
-		        
 		        try { 	
 		        	StyleConstants.setForeground(style, Color.GREEN);
-		        	doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) +" Increase " +"\n" ,style); }
+		        	doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) +" Increase Today" +"\n" ,style); }
 		        	catch (BadLocationException e){}
 		        	//System.out.println("Positive");
 
@@ -124,7 +164,7 @@ tPane.setEditable(false);
 		        
 		        try {     
 			        StyleConstants.setForeground(style, Color.RED);
-			        doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) + " Decrease " + "\n" ,style); }
+			        doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) + " Decrease Today" + "\n" ,style); }
 			        catch (BadLocationException e){}
 
 		        	//System.out.println("negative");
