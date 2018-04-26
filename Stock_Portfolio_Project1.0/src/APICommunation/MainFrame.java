@@ -89,6 +89,7 @@ public class MainFrame {
 		tp.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
 	        	sumPanel.refresh();
+	        	sumPanel.activeStocks();
 	        	yourSPanel.refresh2();
 	            if(tp.getSelectedIndex() == 3){
 	            	//refresh news page

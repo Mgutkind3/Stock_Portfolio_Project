@@ -2,7 +2,9 @@ package APICommunation;
 
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -28,23 +30,29 @@ import org.json.JSONException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class SummaryPanel extends JPanel {
 	public static ArrayList<String> favorites = new ArrayList<String>();
 	private static ArrayList<String> changePerc = new ArrayList<String>();
 	public static ArrayList<String> myStocks = new ArrayList<String>();
-	private JTextArea favText = new JTextArea();
+	public static ArrayList<String> activePercentChange = new ArrayList<String>();
+	public static ArrayList<String> activeSymbols = new ArrayList<String>();
 	private JTextPane tPane = new JTextPane();
+	private JTextPane mostActivePane = new JTextPane();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
+	private static DecimalFormat df2 = new DecimalFormat("#.##");
 	
 	public SummaryPanel() {
 
 tPane.setEditable(false);
+mostActivePane.setEditable(false);
 //		favorites.add("stock 1");
 //		favorites.add("stock 2");
 		myStocks.add("stock1");
 		myStocks.add("stock2");
+		
 		
 
 		// create logout button
@@ -57,29 +65,35 @@ tPane.setEditable(false);
 
 		setBorder(MainFrame.createTitle("Summary"));
 
-		GridLayout grid = new GridLayout(20, 2);
+		GridLayout grid = new GridLayout(3, 2);
 		setLayout(grid);
 
 		JLabel favLabel = new JLabel("Favorites");
+		JLabel sumLabel = new JLabel("Most Active Stocks");
 		
 		//get most active api call
 		getMostActive(baseUrl + "stock/market/list/mostactive");
-
-		JTextArea stockText = new JTextArea();
-
-		for (int i = 0; i < favorites.size(); i++) {
-			stockText.setText(stockText.getText() + myStocks.get(i) + "\n");
-		}
-
-		favText.setEditable(false);
-		stockText.setEditable(false);
-		JLabel sumLabel = new JLabel("Highest Increases/Decreases");
-
+		activeStocks();
+		refresh();
+		
+		//create fav panel
+		JPanel favPanel = new JPanel();
+		favPanel.setLayout(new BorderLayout());
+		favPanel.add(favLabel,BorderLayout.NORTH);
+		favPanel.add(tPane, BorderLayout.CENTER);
+		
+		//create most Active panel
+		JPanel actPanel = new JPanel();
+		actPanel.setLayout(new BorderLayout());
+		actPanel.add(sumLabel,BorderLayout.NORTH);
+		actPanel.add(mostActivePane, BorderLayout.CENTER);
+		actPanel.add(logOutPanel, BorderLayout.EAST);
 	
-		add(favLabel);
-		add(tPane);
-		add(sumLabel);
-		add(stockText);
+
+//		add(sumLabel);
+//		add(mostActivePane);
+		add(favPanel);
+		add(actPanel);
 		add(logOutPanel);
 
 		// logout button
@@ -113,14 +127,12 @@ tPane.setEditable(false);
 
 			for (int i = 0; i < arr.length(); i++) {
 				String symbol = arr.getJSONObject(i).getString("symbol");
-				String change = arr.getJSONObject(i).getString("change");
+				String change = arr.getJSONObject(i).getString("changePercent");
 				// String combined = name + "-" + symbol;
 
 				// populate vectors with symbols and names
-				System.out.println("symbol: " + symbol);
-				System.out.println("change: " + change);
-//				symbols.add(symbol);
-//				companyNames.add(name);
+				activeSymbols.add(symbol);
+				activePercentChange.add(change);
 
 			}
 		} catch (JSONException e) {
@@ -128,6 +140,7 @@ tPane.setEditable(false);
 		}
 	}
 
+	//refresh most active stocks and favorite stocks
 	public void refresh() {
 		
 		StyledDocument doc = tPane.getStyledDocument();
@@ -149,25 +162,58 @@ tPane.setEditable(false);
 			if(number > 0){
 		        try { 	
 		        	StyleConstants.setForeground(style, Color.GREEN);
-		        	doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) +" Increase Today" +"\n" ,style); }
+		        	doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + df2.format(number) +" Increase Today" +"\n" ,style); }
 		        	catch (BadLocationException e){}
-		        	//System.out.println("Positive");
-
 				//color code green
-			}else{
-		        
+			}else{  
 		        try {     
 			        StyleConstants.setForeground(style, Color.RED);
-			        doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + changePerc.get(i) + " Decrease Today" + "\n" ,style); }
+			        doc.insertString(doc.getLength(), favorites.get(i) + ":  %" + df2.format(number) + " Decrease Today" + "\n" ,style); }
 			        catch (BadLocationException e){}
-
-		        	//System.out.println("negative");
 				//color code red
 			}
 		}
 		
+        
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public void activeStocks(){
+		
+		StyledDocument doc1 = mostActivePane.getStyledDocument();
+        Style style1 = mostActivePane.addStyle("I'm a Style", null);
+        
+        //erase doc contents
+        try {
+			doc1.remove(0, doc1.getLength());
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
+		}
+        
+		//loop through list of most Active stocks
+				for (int i = 0; i < activeSymbols.size(); i++) {
+					
+					//get percent change value as a double
+					double activeNumber = Double.parseDouble(activePercentChange.get(i));
+					
+					if(activeNumber > 0){
+				        try { 	
+				        	StyleConstants.setForeground(style1, Color.GREEN);
+				        	doc1.insertString(doc1.getLength(), activeSymbols.get(i) + ":  %" + df2.format(activeNumber) +" Increase as of Now" +"\n" ,style1); }
+				        	catch (BadLocationException e){}
+						//color code green
+					}else{
+				        
+				        try {     
+					        StyleConstants.setForeground(style1, Color.RED);
+					        doc1.insertString(doc1.getLength(), activeSymbols.get(i) + ":  %" + df2.format(activeNumber) + " Decrease as of Now" + "\n" ,style1); }
+					        catch (BadLocationException e){}
+						//color code red
+					}
+				}
+				this.revalidate();
+				this.repaint();
 	}
 
 	//make sure no duplicate stocks can be added to the user's lists of favorites
