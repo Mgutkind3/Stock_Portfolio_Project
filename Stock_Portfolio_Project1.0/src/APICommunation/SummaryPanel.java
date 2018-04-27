@@ -89,9 +89,6 @@ mostActivePane.setEditable(false);
 		actPanel.add(mostActivePane, BorderLayout.CENTER);
 		actPanel.add(logOutPanel, BorderLayout.EAST);
 	
-
-//		add(sumLabel);
-//		add(mostActivePane);
 		add(favPanel);
 		add(actPanel);
 		add(logOutPanel);
