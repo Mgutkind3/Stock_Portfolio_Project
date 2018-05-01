@@ -1,4 +1,5 @@
-package APICommunation;
+
+
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -31,6 +32,13 @@ public class SignUpPanel extends JPanel {
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
+		
+		JButton btnBack = new JButton("Back");
+		GridBagConstraints gbc_btnBack = new GridBagConstraints();
+		gbc_btnBack.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBack.gridx = 1;
+		gbc_btnBack.gridy = 0;
+		add(btnBack, gbc_btnBack);
 		
 		JLabel lbl_signup = new JLabel("Create New Account");
 		GridBagConstraints gbc_lbl_signup = new GridBagConstraints();
@@ -129,10 +137,11 @@ public class SignUpPanel extends JPanel {
 		        username = textfield_user.getText().toString().trim();
 		       
 		        pass = passwordField.getPassword();
-		        passRepeat = passwordField.getPassword();
+		        passRepeat = passwordFieldRepeat.getPassword();
 		        String password = new String (pass);
 		        String passwordRepeat = new String (passRepeat);
-
+		        System.out.println(password);
+		        System.out.println(passwordRepeat);
 		        Boolean passconfirm = null;
 		        if(username.equals("")) {
 		        	lbl_warning.setText("Please add a username");
@@ -168,5 +177,33 @@ public class SignUpPanel extends JPanel {
 		      }
 		    });
 		
+		
+		btnBack.addActionListener(new ActionListener()
+	    {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame main = new MainFrame();
+				main.toSignIn();
+
+				
+			}
+	      
+	    });
+		
+		btn_clear.addActionListener(new ActionListener()
+	    {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textfield_user.setText("");
+				passwordField.setText("");
+				passwordFieldRepeat.setText("");
+
+				
+			}
+	      
+	    });
+	
 	}
 }

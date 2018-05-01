@@ -1,4 +1,4 @@
-package APICommunation;
+
 
 
 import java.io.BufferedReader;
@@ -199,7 +199,8 @@ public class MongoConnect {
 			}
 		} 
 	
-
+		MainFrame main = new MainFrame();
+		main.toSignIn();
 	}
 	
 	public static String getOS() {

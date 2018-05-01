@@ -1,4 +1,3 @@
-package APICommunation;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -19,6 +18,7 @@ public class MainFrame {
 	private static SummaryPanel sumPanel = new SummaryPanel();
 	private static SignUpPanel signupPanel = new SignUpPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
+	private static DataPanel dPanel = new DataPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
@@ -65,18 +65,22 @@ public class MainFrame {
 		menu.setVisible(true);
 
 		// initialize frame for UI
+
 		frame.setSize(850, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page
+
 		JScrollPane summaryScroll = new JScrollPane(sumPanel);
 		JScrollPane yourStocksScroll = new JScrollPane(yourSPanel);
+		JScrollPane dataScroll = new JScrollPane(dPanel);
 		JScrollPane stockSearchScroll = new JScrollPane(sSearchPanel);
 		JScrollPane helpScoll = new JScrollPane(hPanel);
 
 		// add tabs to the tab panel
 		tp.addTab("Summary", summaryScroll);
 		tp.addTab("Your Stocks", yourStocksScroll);
+		tp.addTab("Data", dataScroll);
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("Help", helpScoll);
 
@@ -95,6 +99,7 @@ public class MainFrame {
 		menu.getContentPane().removeAll();
 		menu.repaint();
 		menu.add(signupPanel);
+	
 		menu.repaint();
 		menu.setVisible(true);
 	}
@@ -102,11 +107,20 @@ public class MainFrame {
 		menu.setVisible(false);
 		frame.setVisible(true);	
 	}
+	
+	public void toSignIn() {
+		MenuPanel menuPanel = new MenuPanel();
+		menu.getContentPane().removeAll();
+		menu.repaint();
+		menu.add(menuPanel);
+		menu.setVisible(true);
+	}
 	// create border
 	public static TitledBorder createTitle(String titleName) {
 		TitledBorder title = BorderFactory.createTitledBorder(titleName);
 		title.setTitleJustification(TitledBorder.CENTER);
 		title.setTitleFont(new Font("Arial", Font.BOLD, 20));
+
 		return title;
 	}
 
@@ -115,4 +129,4 @@ public class MainFrame {
 		MainFrame.frame.setVisible(false);
 	}
 
-} 
+}

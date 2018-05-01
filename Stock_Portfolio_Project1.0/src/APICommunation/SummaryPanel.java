@@ -1,4 +1,3 @@
-package APICommunation;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -102,7 +101,8 @@ public class SummaryPanel extends JPanel {
 		// logout button
 		logOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainFrame.logout();
+				MainFrame frame = new MainFrame();
+				frame.toSignIn();
 
 			}
 		});

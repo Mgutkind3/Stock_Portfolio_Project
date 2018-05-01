@@ -1,4 +1,3 @@
-package APICommunation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -186,7 +185,7 @@ public class StockSearchPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// add to favorites list
 				SummaryPanel.addFavoite(symbols.elementAt(searchBarNames.getSelectedIndex()),
-						specificStockFields.getChangePercent());
+						specificStockFields.getCompanyName());
 				String symbol = symbols.elementAt(searchBarNames.getSelectedIndex());
 				
 				try {
