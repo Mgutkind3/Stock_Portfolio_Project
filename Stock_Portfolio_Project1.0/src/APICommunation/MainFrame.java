@@ -29,68 +29,25 @@ public class MainFrame {
 
 	// objects for referencing java ui panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
+    private static SignUpPanel signupPanel = new SignUpPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static NewsPanel dPanel = new NewsPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
 	private static JFrame frame = new JFrame("Stock Ticker");
-	public static ArrayList<String> usernameList = new ArrayList<String>();
-	public static ArrayList<String> passwordList = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
-
-		System.out.print("Enter Username");
-		Scanner scan = new Scanner(System.in);
-		String getUser = scan.next();
-		getUser.trim();
-
-		System.out.print("Enter Password");
-		String getPass = scan.next();
-		getPass.trim();
-		scan.close();
-		// login(getUser, getPass);
-
-		if (MongoConnect.checkUsernameExist(getUser) == false) {
-			MongoConnect.createUser(getUser, getPass);
-		}
-		//panel to organize username and password
-		JPanel usernamePan = new JPanel();
-		usernamePan.setLayout(new FlowLayout());
-		JPanel passwordPan = new JPanel();
-		passwordPan.setLayout(new FlowLayout());
 		
 		// create menu frame
-		menu.setSize(500, 250);
-		menu.setLayout(new GridLayout(4,1));
-		menu.setLocationRelativeTo(null);
-		menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		menu.setMinimumSize(new Dimension(400, 200));
-
-		//labels and text fields
-		JLabel usernameLabel = new JLabel("Enter Username");
-		JLabel passwordLabel = new JLabel("Enter Password");
-		JLabel errorLabel = new JLabel("<html><font color='red'>Invalid Username or Password</font></html>");
-		errorLabel.setVisible(false);
-		JTextField usernameField = new JTextField(20);
-		JPasswordField passwordField = new JPasswordField(20);
-		usernameField.setToolTipText("Please enter Username");
-		passwordField.setToolTipText("Please enter Password");
+		menu.setSize(850, 750);
 		
-		//add username option here
-		usernamePan.add(usernameLabel);
-		usernamePan.add(usernameField);
-		passwordPan.add(passwordLabel);
-		passwordPan.add(passwordField);
-		menu.add(usernamePan);
-		menu.add(passwordPan);
-		menu.add(errorLabel);
-		JButton enter = new JButton("Login");
-		menu.add(enter);
+		MenuPanel menuPanel = new MenuPanel();
+		menu.add(menuPanel);
 		menu.setVisible(true);
 
 		// initialize frame for UI
-		frame.setSize(1000, 750);
+		frame.setSize(850, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page
@@ -128,60 +85,32 @@ public class MainFrame {
 	        }
 	    });
 
-		//the enter button on login screen search google sheets to see if user exists
-		enter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String userNameString = "https://sheets.googleapis.com/v4/spreadsheets/1Na9YXFwUkRrNXl5FSF5zrFa4lO6PZBYj55lPmFW2qbU/values/Sheet1!B%3AA?fields=values&key=AIzaSyAJ60kg9erJ7k6LjROcJYTArrZMDeDgZo4";
-				URL url;
-				try {
-					url = new URL(userNameString);
-					String jsonResultUsernames = ApiFetch.getJson(url.toString());
-					parseUsernames(jsonResultUsernames);
-					
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				//if statement to match back-end users here
-				String userNameEntered = new String(usernameField.getText());
-				String passwordEntered = new String(passwordField.getPassword());
-				if(usernameList.contains(userNameEntered) && passwordList.contains(passwordEntered)){
-					menu.setVisible(false);
-					frame.setVisible(true);
-				}else{
-					//print error statement
-					errorLabel.setVisible(true);
-				}
-			}
-		});
-		
-
-		// hit enter to log in
-		passwordField.addKeyListener(new KeyListener() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-					enter.doClick();
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// Do Nothing
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// Do Nothing
-			}
-
-		});
-
 	}// end of main
 
+	//lindsay's
+    public void toSignup() {
+        SignUpPanel signupPanel = new SignUpPanel();
+        menu.getContentPane().removeAll();
+        menu.repaint();
+        menu.add(signupPanel);
+ 
+        menu.repaint();
+        menu.setVisible(true);
+    }
+    
+    public void toSummary() {
+        menu.setVisible(false);
+        frame.setVisible(true); 
+    }
+    
+	public void toSignIn() {
+		MenuPanel menuPanel = new MenuPanel();
+		menu.getContentPane().removeAll();
+		menu.repaint();
+		menu.add(menuPanel);
+		menu.setVisible(true);
+	}
+	
 	// create border
 	public static TitledBorder createTitle(String titleName) {
 		TitledBorder title = BorderFactory.createTitledBorder(titleName);
@@ -191,25 +120,11 @@ public class MainFrame {
 		return title;
 	}
 
+	//logout
 	public static void logout() {
 		MainFrame.menu.setVisible(true);
 		MainFrame.frame.setVisible(false);
 	}
 	
-	//parse usernames and passwords into a list
-	public static void parseUsernames(String json) throws JSONException{
-		JSONObject jObj = new JSONObject(json);
-		JSONArray usernames = jObj.getJSONArray("values");
-
-		for (int i = 0; i < usernames.length(); i++) {
-			JSONArray arr = usernames.getJSONArray(i);
-			String usernameStr = arr.getString(0);
-			String passwordStr = arr.getString(1);
-			
-			usernameList.add(usernameStr);
-			passwordList.add(passwordStr);
-
-		}
-	}
 
 }

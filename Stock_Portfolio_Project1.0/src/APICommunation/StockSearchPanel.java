@@ -51,7 +51,7 @@ public class StockSearchPanel extends JPanel {
 	private JPanel buttonPanel = new JPanel();
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
 	private String baseUrl = "https://api.iextrading.com/1.0/";
-	private String testSymbol;
+	private static String testSymbol;
 	private boolean noDataError;
     final private JLabel errorMessage = new JLabel("No data from API");
 
@@ -241,7 +241,6 @@ public class StockSearchPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				// remove current stocks data
-
 				cp.removeAllDataset();
 				addButton.doClick();
 				addFavorite.setEnabled(true);
@@ -323,7 +322,7 @@ public class StockSearchPanel extends JPanel {
  
     }
 
-	  private void addToGraphPanel(){
+	private void addToGraphPanel(){
 	        graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
 	        graphPanel.setPreferredSize(graphPanel.getPreferredSize());
 	        revalidate();
@@ -570,11 +569,15 @@ public class StockSearchPanel extends JPanel {
 	}
 	
 	public Vector<String> getHeadlines(){
-		return this.headlines;
+		return StockSearchPanel.headlines;
 	}
 	
 	public Vector<String> getUrlSources(){
-		return this.urlSources;
+		return StockSearchPanel.urlSources;
+	}
+	
+	public static String getSymbol(){
+		return testSymbol;
 	}
 
 }// end of class
