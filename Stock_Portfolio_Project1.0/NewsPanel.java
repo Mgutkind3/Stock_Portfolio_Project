@@ -20,6 +20,7 @@ public class NewsPanel extends JPanel {
 	private Vector<String> headlines = new Vector<String>();
 	private Vector<String> urlSources = new Vector<String>();
     private JPanel graphPanel = new JPanel();
+    private Vector<String> companyNames = new Vector<String>();
     private JPanel NewsDisplays = new JPanel();
     private static String symbolStr;
    StockSearchPanel stockSearchPan = new StockSearchPanel();
@@ -35,7 +36,7 @@ public class NewsPanel extends JPanel {
 	   NewsDisplays.removeAll();
 	   headlines = stockSearchPan.getHeadlines();
 	   urlSources = stockSearchPan.getUrlSources();
-	   symbolStr = StockSearchPanel.getSymbol();
+	   symbolStr = stockSearchPan.getSymbol();
 	   
        this.setBorder(MainFrame.createTitle("News For " + symbolStr));
 	   

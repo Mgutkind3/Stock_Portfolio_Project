@@ -1,14 +1,20 @@
 package csi480;
 
-import java.awt.event.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
@@ -19,6 +25,7 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jfree.data.time.Day;
+import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.json.JSONArray;
@@ -27,8 +34,7 @@ import org.json.JSONObject;
 
 public class StockSearchPanel extends JPanel {
 
-	// Implement lists to house data
-	private int timeIndicator;
+	// impliment lists to house data
 	private Vector<String> priceDates = new Vector<String>();
 	private Vector<String> closedPrices = new Vector<String>();
 	private static Vector<String> urlSources = new Vector<String>();
@@ -41,17 +47,17 @@ public class StockSearchPanel extends JPanel {
 	private Vector<String> month6Dates = new Vector<String>();
 	private Vector<String> yearPrices = new Vector<String>();
 	private Vector<String> yearDates = new Vector<String>();
-	private Vector<JButton> buttonList = new Vector<JButton>();
 	private CPanel cp = new CPanel();
 	private JPanel graphPanel = new JPanel();
 	private JPanel buttonPanel = new JPanel();
 	private ParseSpecificStockData specificStockFields = new ParseSpecificStockData();
-	private final String baseUrl = "https://api.iextrading.com/1.0/";
-	private static String newsSymbol;
-	final private JLabel errorMessage = new JLabel("Missing data from API");
+	private String baseUrl = "https://api.iextrading.com/1.0/";
+	private static String testSymbol;
+	private boolean noDataError;
+    final private JLabel errorMessage = new JLabel("No data from API");
 
 	public StockSearchPanel() {
-		this.timeIndicator = 0;
+		this.noDataError=false;
 		this.setLayout(new BorderLayout());
 		this.setBorder(MainFrame.createTitle("Search Stocks"));
 		this.cp.setyAxsis("Dollars");
@@ -76,10 +82,7 @@ public class StockSearchPanel extends JPanel {
 		JButton monthButton = new JButton("Month");
 		JButton halfYearButton = new JButton("6 Months");
 		JButton yearButton = new JButton("Year");
-		buttonList.add(monthButton);
-		buttonList.add(halfYearButton);
-		buttonList.add(yearButton);
-
+		
 		// add action listeners to correlate boxes with each other (Match below)
 		searchBarNames.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -102,7 +105,8 @@ public class StockSearchPanel extends JPanel {
 
 		// JPanel for search and instruction labels (left panel)
 		JPanel searchBarGrid = new JPanel();
-		searchBarGrid.setLayout(new GridLayout(25, 1));
+		searchBarGrid.setLayout(new GridLayout(25, 1));// make the columns
+														// thinner
 		searchBarGrid.add(titleInstructionsNames);
 		searchBarGrid.add(searchBarNames);
 		searchBarGrid.add(titleInstructionsSymb);
@@ -113,7 +117,8 @@ public class StockSearchPanel extends JPanel {
 
 		// JPanel for data results (middle panel)
 		JPanel dataResultsGrid = new JPanel();
-		dataResultsGrid.setLayout(new GridLayout(25, 1));
+		dataResultsGrid.setLayout(new GridLayout(25, 1));// make the columns
+															// thinner
 		dataResultsGrid.setPreferredSize(new Dimension(200, 300));
 
 		this.graphPanel.setLayout(new BorderLayout());
@@ -130,70 +135,53 @@ public class StockSearchPanel extends JPanel {
 		LocalDateTime now = LocalDateTime.now();
 		String todayDate = dtf.format(now).toString();
 
+		// create 1 month calculation for api call
+		String lastMonthString = getMonthBefore();
 		monthButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				timeIndicator = 0;
-				errorMessage.setVisible(false);
-				ArrayList<String> currentSymbols = cp.getStockSymbols();
-				cp.removeAllDataset();
-				for (int i = 0; i < currentSymbols.size(); i++) {
-					monthPrices.clear();
-					monthDates.clear();
-
-					System.out.println(currentSymbols.get(i) + " is stock number " + i);
-
-					getAPIStocks(baseUrl + "stock/market/batch?symbols=" + currentSymbols.get(i) + "&types=quote,news,chart",1, currentSymbols.get(i), 5);
-					updateChart(currentSymbols.get(i));
-				}
-				revalidate();
-				repaint();
+				submitButton.doClick();
 			}
 		});
 
+		// create half year calculation and api call
 		String last6MonthString = get6MonthBefore();
 		halfYearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				timeIndicator = 1;
-				errorMessage.setVisible(false);
-				ArrayList<String> currentSymbols = cp.getStockSymbols();
 				cp.removeAllDataset();
-				for (int i = 0; i < currentSymbols.size(); i++) {
-					month6Prices.clear();
-					month6Dates.clear();
+				month6Prices.clear();
+				month6Dates.clear();
 
-					System.out.println(currentSymbols.get(i) + " is stock number " + i);
-					getAPIStocks("https://www.quandl.com/api/v3/datasets/WIKI/" + currentSymbols.get(i)
-							+ ".json?column_index=4&start_date=" + last6MonthString + "&end_date=" + todayDate
-							+ "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL", 2, null, 1);
-					updateChartHalfYear(currentSymbols.get(i));
-				}
+				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
+				String month6Call = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany
+						+ ".json?column_index=4&start_date=" + last6MonthString + "&end_date=" + todayDate
+						+ "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
+				getAPIStocks(month6Call, 2, null, 1);
+
+				updateChartHalfYear();
 				revalidate();
 				repaint();
 			}
 		});
 
 		String lastYearString = getYearBefore();
-		yearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				timeIndicator = 2;
-				errorMessage.setVisible(false);
-				ArrayList<String> currentSymbols = cp.getStockSymbols();
+		yearButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
 				cp.removeAllDataset();
-
-				for (int i = 0; i < currentSymbols.size(); i++) {
-					yearDates.clear();
-					yearPrices.clear();
-					getAPIStocks("https://www.quandl.com/api/v3/datasets/WIKI/" + currentSymbols.get(i)
-							+ ".json?column_index=4&start_date=" + lastYearString + "&end_date=" + todayDate
-							+ "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL", 2, null, 2);
-					updateChartYear(currentSymbols.get(i));
-				}
-
+				yearDates.clear();
+				yearPrices.clear();
+				
+				String currentCompany = symbols.elementAt(searchBarNames.getSelectedIndex());
+				String yearCall = "https://www.quandl.com/api/v3/datasets/WIKI/" + currentCompany
+						+ ".json?column_index=4&start_date=" + lastYearString + "&end_date=" + todayDate
+						+ "&collapse=daily&api_key=ZGGxFod_7TVXrEU-UeuL";
+				getAPIStocks(yearCall, 2, null, 2);
+				
+				updateChartYear();
 				revalidate();
 				repaint();
 			}
 		});
-
+		
 		// Adds to the Favorites on the SummaryPanel
 		addFavorite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -208,14 +196,13 @@ public class StockSearchPanel extends JPanel {
 
 				// remove current stocks data
 				dataResultsGrid.removeAll();
-				//closedPrices.clear();
-				//priceDates.clear();
-				
+				closedPrices.clear();
+				priceDates.clear();
 				headlines.clear();
 				urlSources.clear();
 
 				String symbolSelected = symbols.elementAt(searchBarNames.getSelectedIndex());
-				newsSymbol = symbolSelected;
+				testSymbol = symbolSelected;
 				// use latest price field for the latest price (never null)
 				getAPIStocks(baseUrl + "stock/market/batch?symbols=" + symbolSelected + "&types=quote,news,chart", 1,
 						symbolSelected, 5);
@@ -243,9 +230,7 @@ public class StockSearchPanel extends JPanel {
 				dataResultsGrid.add(week52High);
 				dataResultsGrid.add(week52Low);
 
-				updateChart(symbolSelected);
-				buttonList.get(timeIndicator).doClick();
-				addFavorite.setEnabled(true);
+				updateChart();
 				revalidate();
 				repaint();
 
@@ -271,15 +256,16 @@ public class StockSearchPanel extends JPanel {
 		buttonPanel.add(monthButton);
 		buttonPanel.add(halfYearButton);
 		buttonPanel.add(yearButton);
-
-		errorMessage.setForeground(Color.RED);
-		JPanel helperPanel = new JPanel();
-		helperPanel.setLayout(new BorderLayout());
-		helperPanel.add(buttonPanel, BorderLayout.CENTER);
-		helperPanel.add(errorMessage, BorderLayout.NORTH);
-
-		graphPanel.add(helperPanel, BorderLayout.SOUTH);
-
+		
+		
+        errorMessage.setForeground(Color.RED);
+        JPanel helperPanel = new JPanel();
+        helperPanel.setLayout(new BorderLayout());
+        helperPanel.add(buttonPanel, BorderLayout.CENTER);
+        helperPanel.add(errorMessage,BorderLayout.NORTH);
+        
+        graphPanel.add(helperPanel, BorderLayout.SOUTH);
+        
 		// add panels to main menu border layout
 		this.add(searchBarGrid, BorderLayout.LINE_START);
 		this.add(dataResultsGrid, BorderLayout.LINE_END);
@@ -289,10 +275,21 @@ public class StockSearchPanel extends JPanel {
 		this.repaint();
 	}
 
-	private void updateChartYear(String addSymbol) {
+	private void updateChartYear() {
 		cp.removeAll();
 		try {
-			createChartYear(addSymbol);
+			createChartYear(testSymbol);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		addToGraphPanel();
+		
+	}
+
+	private void updateChart() {
+		cp.removeAll();
+		try {
+			createChart(testSymbol);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -300,51 +297,40 @@ public class StockSearchPanel extends JPanel {
 
 	}
 
-	private void updateChart(String addSymbol) {
+	private void updateChartHalfYear() {
 		cp.removeAll();
 		try {
-			createChart(addSymbol);
+			createChartHalfYear(testSymbol);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		addToGraphPanel();
 
 	}
-
-	private void updateChartHalfYear(String addSymbol) {
-		cp.removeAll();
-		try {
-			createChartHalfYear(addSymbol);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		addToGraphPanel();
-
-	}
-
+	
 	private void createChartYear(String symbol) throws ParseException {
-		// pass symbol name
-		TimeSeries series = new TimeSeries(symbol);
+        // pass symbol name
+        TimeSeries series = new TimeSeries(symbol);
+ 
+        // adds data to series to be used in chart
+        for (int i = 0; i < yearPrices.size(); i++) {
+            // parse dates to accurately fit prices
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(yearDates.get(i));
+            series.addOrUpdate(new Day(date1), Double.parseDouble(yearPrices.elementAt(i)));
+        } // first input param is x axis, 2nds is y axis
+ 
+        addSeriesToChart(series, symbol);
+ 
+    }
 
-		// adds data to series to be used in chart
-		for (int i = 0; i < yearPrices.size(); i++) {
-			// parse dates to accurately fit prices
-			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(yearDates.get(i));
-			series.addOrUpdate(new Day(date1), Double.parseDouble(yearPrices.elementAt(i)));
-		} // first input param is x axis, 2nds is y axis
-
-		addSeriesToChart(series, symbol);
-
-	}
-
-	private void addToGraphPanel() {
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
-
-	}
-
+	private void addToGraphPanel(){
+	        graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
+	        graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+	        revalidate();
+	        repaint();
+	 
+	    }
+	  
 	private void createChartHalfYear(String symbol) throws ParseException {
 		// pass symbol name
 		TimeSeries series = new TimeSeries(symbol);
@@ -359,26 +345,31 @@ public class StockSearchPanel extends JPanel {
 
 		// Add the series to your data set
 		addSeriesToChart(series, symbol);
-	}
+    }
+ 
+    private void addSeriesToChart(TimeSeries series, String symbol) {
+        if(series.isEmpty()){
+            errorMessage.setVisible(true);
+        }
+        else{
+            errorMessage.setVisible(false);
+        }
 
-	private void addSeriesToChart(TimeSeries series, String symbol) {
-		if (series.isEmpty()) {
-			errorMessage.setVisible(true);
-		} 
-		// Add the series to your data set
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series);
-		this.cp.addDataset(dataset, symbol);
-		this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
-	}
-
-	private void redrawChart() {
-		cp.removeAll();
-		graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
-		graphPanel.setPreferredSize(graphPanel.getPreferredSize());
-		revalidate();
-		repaint();
-	}
+        // Add the series to your data set
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(series);
+        this.cp.addDataset(dataset,symbol);
+        this.cp.setTitle(this.companyNames.get(symbols.indexOf(symbol)));
+    }
+ 
+    private void redrawChart() {
+        cp.removeAll();
+        graphPanel.add(cp.getTimeSeriesChart(), BorderLayout.CENTER);
+        graphPanel.setPreferredSize(graphPanel.getPreferredSize());
+        revalidate();
+        repaint();
+    }
+    
 
 	// get json from url and parse it in "parseAllStockjson"
 	public void getAPIStocks(String urlString, int flag, String symbol, int timeseriesFlag) {
@@ -404,6 +395,18 @@ public class StockSearchPanel extends JPanel {
 			e.printStackTrace();
 		}
 
+	}
+
+	// function to get the day a month ago from today
+	private String getMonthBefore() {
+		Date date = new Date();
+		long DAY_IN_MS = 1000 * 60 * 60 * 24;
+		new Date(System.currentTimeMillis() - (30 * DAY_IN_MS));
+
+		Date lastMonth = new Date(date.getTime() - (30 * DAY_IN_MS));
+		String lastMonthString = lastMonth.getYear() + 1900 + "-" + (lastMonth.getMonth() + 1) + "-"
+				+ lastMonth.getDate();
+		return lastMonthString;
 	}
 
 	// get 6 months ago from today
@@ -472,20 +475,20 @@ public class StockSearchPanel extends JPanel {
 
 				monthPrices.addElement(monthPricesString);
 				monthDates.addElement(monthDatesString);
-				// System.out.println("dataset: " + monthPricesString);
+				System.out.println("dataset: " + monthPricesString);
 			}
 			// parse 6 month data
 			if (flag == 1) {
 
 				month6Prices.addElement(monthPricesString);
 				month6Dates.addElement(monthDatesString);
-				// System.out.println("dataset 6 months: " + monthPricesString);
+				System.out.println("dataset 6 months: " + monthPricesString);
 			}
 			// parse year data
 			if (flag == 2) {
 				yearPrices.addElement(monthPricesString);
 				yearDates.addElement(monthDatesString);
-				// System.out.println("dataset 1 year: " + monthPricesString);
+				System.out.println("dataset 1 year: " + monthPricesString);
 
 			}
 
@@ -525,6 +528,7 @@ public class StockSearchPanel extends JPanel {
 			headlines.add(headline);
 			urlSources.add(urlString);
 		}
+		
 
 		// get data to display in a chart from the last 20 days
 		JSONArray chart = result.getJSONArray("chart");
@@ -533,7 +537,7 @@ public class StockSearchPanel extends JPanel {
 			String closeP = chart.getJSONObject(i).getString("close");
 			String date = chart.getJSONObject(i).getString("date");
 			String changePercent = chart.getJSONObject(i).getString("changePercent");
-			// System.out.println("change %: " + changePercent);
+			//System.out.println("change %: " + changePercent);
 
 			// create list of closed prices for the last 20 days
 			closedPrices.add(closeP);
@@ -541,6 +545,8 @@ public class StockSearchPanel extends JPanel {
 			specificStockFields.setChangePercent(changePercent);
 			// System.out.println(closeP);
 		}
+
+		
 
 	}
 
@@ -556,23 +562,23 @@ public class StockSearchPanel extends JPanel {
 			// String daysStr = new SimpleDateFormat("MM.dd").format(date1);
 			// System.out.println("day: " + daysStr);
 
-			series.addOrUpdate(new Day(date1), Double.parseDouble(closedPrices.elementAt(i)));
+			series.add(new Day(date1), Double.parseDouble(closedPrices.elementAt(i)));
 		} // first input param is x axis, 2nds is y axis
 
 		// Add the series to your data set
 		addSeriesToChart(series, symbol);
 	}
-
-	public Vector<String> getHeadlines() {
+	
+	public Vector<String> getHeadlines(){
 		return StockSearchPanel.headlines;
 	}
-
-	public Vector<String> getUrlSources() {
+	
+	public Vector<String> getUrlSources(){
 		return StockSearchPanel.urlSources;
 	}
-
-	public static String getSymbol() {
-		return newsSymbol;
+	
+	public static String getSymbol(){
+		return testSymbol;
 	}
 
 }// end of class
