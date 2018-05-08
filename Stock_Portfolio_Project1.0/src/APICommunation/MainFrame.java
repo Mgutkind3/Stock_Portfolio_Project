@@ -1,35 +1,18 @@
 package csi480;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Vector;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainFrame {
 
-	// objects for referencing java ui panels
+	// objects for referencing java UI panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
-    private static SignUpPanel signupPanel = new SignUpPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static NewsPanel dPanel = new NewsPanel();
@@ -41,15 +24,15 @@ public class MainFrame {
 		
 		// create menu frame
 		menu.setSize(850, 750);
-		
 		MenuPanel menuPanel = new MenuPanel();
 		menu.add(menuPanel);
+		menu.setLocationRelativeTo(null);
 		menu.setVisible(true);
 
 		// initialize frame for UI
-		frame.setSize(850, 750);
+		frame.setSize(1250, 750);
 		JTabbedPane tp = new JTabbedPane();
-
+		
 		// create scroll panes for every page
 		JScrollPane summaryScroll = new JScrollPane(sumPanel);
 		JScrollPane yourStocksScroll = new JScrollPane(yourSPanel);
@@ -66,9 +49,10 @@ public class MainFrame {
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
-		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(400, 200));
+		frame.setLocationRelativeTo(null);
+	
 		
 		//react to selected tabs
 		tp.addChangeListener(new ChangeListener() {
@@ -87,13 +71,11 @@ public class MainFrame {
 
 	}// end of main
 
-	//lindsay's
     public void toSignup() {
         SignUpPanel signupPanel = new SignUpPanel();
         menu.getContentPane().removeAll();
         menu.repaint();
         menu.add(signupPanel);
- 
         menu.repaint();
         menu.setVisible(true);
     }

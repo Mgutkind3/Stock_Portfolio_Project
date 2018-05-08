@@ -5,40 +5,14 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
 import java.util.Vector;
-
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class NewsPanel extends JPanel {
@@ -46,7 +20,6 @@ public class NewsPanel extends JPanel {
 	private Vector<String> headlines = new Vector<String>();
 	private Vector<String> urlSources = new Vector<String>();
     private JPanel graphPanel = new JPanel();
-    private Vector<String> companyNames = new Vector<String>();
     private JPanel NewsDisplays = new JPanel();
     private static String symbolStr;
    StockSearchPanel stockSearchPan = new StockSearchPanel();
@@ -62,7 +35,7 @@ public class NewsPanel extends JPanel {
 	   NewsDisplays.removeAll();
 	   headlines = stockSearchPan.getHeadlines();
 	   urlSources = stockSearchPan.getUrlSources();
-	   symbolStr = stockSearchPan.getSymbol();
+	   symbolStr = StockSearchPanel.getSymbol();
 	   
        this.setBorder(MainFrame.createTitle("News For " + symbolStr));
 	   

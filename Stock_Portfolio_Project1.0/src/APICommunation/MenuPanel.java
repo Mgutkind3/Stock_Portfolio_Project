@@ -1,17 +1,14 @@
 package csi480;
 
-
-import javax.swing.JPanel;
 import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
+import javax.swing.JLabel; 
+import javax.swing.JPanel;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.JButton;
@@ -106,12 +103,11 @@ public class MenuPanel extends JPanel {
 				try {
 					result = MongoConnect.login(username, password);
 				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					result = 3;
 				}
 				
-				System.out.println(result);
+				//System.out.println(result);
 				if(result == 2 ) {
 					MainFrame main = new MainFrame();
 					main.toSummary();
