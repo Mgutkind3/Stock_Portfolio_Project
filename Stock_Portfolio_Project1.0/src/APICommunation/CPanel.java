@@ -128,6 +128,11 @@ public class CPanel extends JPanel {
 	};
 
 	public void addDataset(TimeSeriesCollection dataset2, String symbol) {
+		if(symbolList.contains(symbol)){
+			System.out.println("Stock already added");
+			return;
+		}
+		
 		this.symbolList.add(symbol);
 		this.timePlot.setDataset(this.datasetIndex, dataset2);
 		this.timePlot.setRenderer(this.datasetIndex, new StandardXYItemRenderer());

@@ -1,11 +1,16 @@
-package APICommunation;
+package csi480;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -16,53 +21,33 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.*;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainFrame {
 
 	// objects for referencing java ui panels
 	private static SummaryPanel sumPanel = new SummaryPanel();
+    private static SignUpPanel signupPanel = new SignUpPanel();
 	private static YourStocksPanel yourSPanel = new YourStocksPanel();
 	private static StockSearchPanel sSearchPanel = new StockSearchPanel();
 	private static NewsPanel dPanel = new NewsPanel();
 	private static HelpPanel hPanel = new HelpPanel();
 	private static JFrame menu = new JFrame("Stock Ticker Menu");
 	private static JFrame frame = new JFrame("Stock Ticker");
-
+	
 	public static void main(String[] args) throws Exception {
-
-		System.out.print("Enter Username");
-		Scanner scan = new Scanner(System.in);
-		String getUser = scan.next();
-		getUser.trim();
-
-		System.out.print("Enter Password");
-		String getPass = scan.next();
-		getPass.trim();
-		scan.close();
-		// login(getUser, getPass);
-
-		if (MongoConnect.checkUsernameExist(getUser) == false) {
-			MongoConnect.createUser(getUser, getPass);
-		}
-
+		
 		// create menu frame
-		menu.setSize(500, 250);
-		menu.setLayout(new FlowLayout());
-		menu.setLocationRelativeTo(null);
-		menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		menu.setMinimumSize(new Dimension(400, 200));
-
-		JLabel passwordLabel = new JLabel("Enter password");
-		JPasswordField passwordField = new JPasswordField(20);
-		passwordField.setToolTipText("Please enter password");
-		menu.add(passwordLabel);
-		menu.add(passwordField);
-		JButton enter = new JButton("Login");
-		menu.add(enter);
+		menu.setSize(850, 750);
+		
+		MenuPanel menuPanel = new MenuPanel();
+		menu.add(menuPanel);
 		menu.setVisible(true);
 
 		// initialize frame for UI
-
-		frame.setSize(1000, 750);
+		frame.setSize(850, 750);
 		JTabbedPane tp = new JTabbedPane();
 
 		// create scroll panes for every page
@@ -78,8 +63,6 @@ public class MainFrame {
 		tp.addTab("Stock Search", stockSearchScroll);
 		tp.addTab("News", dataScroll);
 		tp.addTab("Help", helpScoll);
-		
-		
 
 		// set essential rules for using the jframe
 		frame.getContentPane().add(tp);
@@ -91,7 +74,8 @@ public class MainFrame {
 		tp.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
 	        	sumPanel.refresh();
-			yourSPanel.refresh2();
+	        	sumPanel.activeStocks();
+	        	yourSPanel.refresh2();
 	            if(tp.getSelectedIndex() == 3){
 	            	//refresh news page
 	            	dPanel.buildPage();
@@ -101,40 +85,32 @@ public class MainFrame {
 	        }
 	    });
 
-		// the enter button on login screen
-		enter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (Arrays.equals(passwordField.getPassword(), new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' })) {
-					passwordField.setText("");
-					menu.setVisible(false);
-					frame.setVisible(true);
-				}
-			}
-		});
-
-		// hit enter to log in
-		passwordField.addKeyListener(new KeyListener() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-					enter.doClick();
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// Do Nothing
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// Do Nothing
-			}
-
-		});
-
 	}// end of main
 
+	//lindsay's
+    public void toSignup() {
+        SignUpPanel signupPanel = new SignUpPanel();
+        menu.getContentPane().removeAll();
+        menu.repaint();
+        menu.add(signupPanel);
+ 
+        menu.repaint();
+        menu.setVisible(true);
+    }
+    
+    public void toSummary() {
+        menu.setVisible(false);
+        frame.setVisible(true); 
+    }
+    
+	public void toSignIn() {
+		MenuPanel menuPanel = new MenuPanel();
+		menu.getContentPane().removeAll();
+		menu.repaint();
+		menu.add(menuPanel);
+		menu.setVisible(true);
+	}
+	
 	// create border
 	public static TitledBorder createTitle(String titleName) {
 		TitledBorder title = BorderFactory.createTitledBorder(titleName);
@@ -144,9 +120,11 @@ public class MainFrame {
 		return title;
 	}
 
+	//logout
 	public static void logout() {
 		MainFrame.menu.setVisible(true);
 		MainFrame.frame.setVisible(false);
 	}
+	
 
 }

@@ -1,4 +1,4 @@
-package APICommunation;
+package csi480;
 
 
 import java.awt.BorderLayout;
@@ -48,14 +48,11 @@ public class NewsPanel extends JPanel {
     private JPanel graphPanel = new JPanel();
     private Vector<String> companyNames = new Vector<String>();
     private JPanel NewsDisplays = new JPanel();
+    private static String symbolStr;
    StockSearchPanel stockSearchPan = new StockSearchPanel();
- //   GetAPIParser apiParser = new GetAPIParser();
-   
    
    public NewsPanel() {
 
-       this.setBorder(MainFrame.createTitle("News"));
-    	   
    }
    
 
@@ -65,11 +62,13 @@ public class NewsPanel extends JPanel {
 	   NewsDisplays.removeAll();
 	   headlines = stockSearchPan.getHeadlines();
 	   urlSources = stockSearchPan.getUrlSources();
+	   symbolStr = stockSearchPan.getSymbol();
+	   
+       this.setBorder(MainFrame.createTitle("News For " + symbolStr));
 	   
        this.setLayout(new BorderLayout());
        this.graphPanel.setLayout(new BorderLayout());
        NewsDisplays.setLayout(new GridLayout(20,1));
-       
        JLabel newsLabel[] = new JLabel[headlines.size()];
 	   
        //add headlines and sources to news panel with hyperlink

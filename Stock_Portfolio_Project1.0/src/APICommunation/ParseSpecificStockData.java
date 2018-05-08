@@ -1,4 +1,4 @@
-package APICommunation;
+package csi480;
 public class ParseSpecificStockData {
 
 	private String companyName;
