@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -26,8 +27,11 @@ public class HelpPanel extends JPanel {
 		helpText.setText("If you have any comments/concerns, please email customerservice@apple2.com \n");
 		
 		
-		ImageIcon image = new ImageIcon("/logo/apple2.png");
+		ImageIcon image = new ImageIcon("src/logo/apple2.png");
 		JLabel logo = new JLabel(image);
+		if(logo.getIcon() == null){
+			logo.setText("Image missing");
+		}
 		JPanel logoPanel = new JPanel(new BorderLayout());
 		logoPanel.add(logo, BorderLayout.SOUTH);
 		
@@ -64,4 +68,6 @@ public class HelpPanel extends JPanel {
 	    } 
 	    else { /* TODO: error handling */ }
 	  }
+	
+	
 }
